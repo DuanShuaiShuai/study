@@ -1,0 +1,31 @@
+{
+  "name": "rollup-demo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "rollup -c",
+    "flow": "flow check",
+    "flow-remove": "flow-remove-types src/ -d lib/",
+    "node": "babel-node ./src/flow/test.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.9.0",
+    "@babel/node": "^7.8.7",
+    "@babel/preset-flow": "^7.9.0",
+    "flow-bin": "^0.122.0",
+    "flow-remove-types": "^2.122.0",
+    "jquery": "^3.4.1",
+    "rollup-plugin-buble": "^0.19.8",
+    "rollup-plugin-flow-no-whitespace": "^1.0.0",
+    "rollup-plugin-json": "^4.0.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-replace": "^2.2.0"
+  },
+  "dependencies": {
+    "rollup-plugin-commonjs": "^10.1.0"
+  }
+}

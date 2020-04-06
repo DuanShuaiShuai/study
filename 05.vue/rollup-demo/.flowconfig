@@ -1,0 +1,11 @@
+[ignore]
+./dist/.*
+[include]
+./src/
+[libs]
+flowType
+[lints]
+
+[options]
+
+[strict]
