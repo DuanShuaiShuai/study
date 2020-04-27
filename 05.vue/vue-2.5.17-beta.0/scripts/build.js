@@ -66,6 +66,7 @@ function buildEntry (config) {
 function write (dest, code, zip) {
   return new Promise((resolve, reject) => {
     function report (extra) {
+      // 第一个路径怎么去第二个路径
       console.log(blue(path.relative(process.cwd(), dest)) + ' ' + getSize(code) + (extra || ''))
       resolve()
     }
