@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>绘制图像</title>
+    <style>
+        body{margin: 0;overflow: hidden}
+        #canvas{background: antiquewhite;}
+    </style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<script>
+    const canvas=document.getElementById('canvas');
+    canvas.width=window.innerWidth;
+    canvas.height=window.innerHeight;
+    const ctx=canvas.getContext('2d');
+
+    const img=new Image();
+    img.src='./images/dog.jpg';
+    img.onload=function(){
+        /*图像尺寸*/
+        const {width,height}=img;
+
+        /*绘图+移动 drawImage(image, x, y) */
+        // ctx.drawImage(img,100,100);
+
+        /*绘图+移动+缩放 drawImage(image, x, y,width,height) */
+        // ctx.drawImage(img,0,0,width/2,height/2);
+
+        /*绘图+裁剪+移动+缩放 drawImage(image, x1, y1,w1,h1,x2,y2,w2,h2) */
+        ctx.drawImage(
+            //图像源
+            img,
+            //相机视口
+            width/2,height/2,width/2,height/2,
+            //视图
+            100,50,width/2,height/2,
+        )
+    };
+
+</script>
+</body>
+</html>
+

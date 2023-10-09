@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ImageData </title>
+    <style>
+        body{margin: 0;overflow: hidden}
+        #canvas{background: antiquewhite;}
+    </style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<script>
+    const canvas=document.getElementById('canvas');
+    //canvas充满窗口
+    canvas.width=window.innerWidth;
+    canvas.height=window.innerHeight;
+    //画笔
+    const  ctx=canvas.getContext('2d');
+
+    /*
+    * 图片尺寸：宽，高
+    * */
+    const [width,height]=[400,200];
+
+    /*ImageData 对象的建立
+    *   new ImageData(Uint8ClampedArray, width, height)
+    *   new ImageData( width, height)
+    * */
+    /*const imgDt=new ImageData(width,height);
+
+    imgDt.data.forEach((ele,ind)=>{
+        imgDt.data[ind]=255;
+    })
+    console.log(imgDt);
+
+    ctx.putImageData(imgDt,0,0);*/
+
+
+    /*用上下文建立ImageData 对象
+    *   ctx.createImageData(width, height)
+    *   ctx.createImageData(ImageData)
+    * */
+    const imgDt=ctx.createImageData(width,height);
+    imgDt.data.forEach((ele,ind)=>{
+        imgDt.data[ind]=255;
+    })
+    ctx.putImageData(imgDt,0,0);
+
+
+    /*getImageData(x, y, width, height) 获取canvas 中的像素*/
+    const imgDt2=ctx.getImageData(0,0,1,1);
+    console.log(imgDt2);
+
+</script>
+</body>
+</html>

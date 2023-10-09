@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>绘制图像</title>
+    <style>
+        body{margin: 0;overflow: hidden}
+        #canvas{background: antiquewhite;}
+    </style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<script>
+    const canvas=document.getElementById('canvas');
+    canvas.width=window.innerWidth;
+    canvas.height=window.innerHeight;
+    const ctx=canvas.getContext('2d');
+    /*图像平滑 imageSmoothingEnabled*/
+
+
+    /*图像源*/
+    const img=new Image();
+    img.src='./images/chess.jpg';
+    img.onload=function(){
+        const {width,height}=img;
+        /*绘图+移动 drawImage(image, x, y) */
+        ctx.drawImage(img,100,100,width*10,height*10);
+        ctx.imageSmoothingEnabled=false;
+        ctx.drawImage(img,100,100+height*10,width*10,height*10);
+    };
+
+</script>
+</body>
+</html>
+

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>点在图形中</title>
+    <style>
+      html {
+        height: 100%;
+      }
+      body {
+        height: 100%;
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+    <script>
+      const canvas = document.getElementById("canvas");
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const ctx = canvas.getContext("2d");
+      ctx.beginPath();
+      ctx.moveTo(50, 50);
+      ctx.lineTo(450, 50);
+      ctx.lineTo(250, 200);
+      ctx.stroke();
+      ctx.closePath();
+      ctx.rect(400, 100, 5, 5);
+      ctx.fill();
+      const b = ctx.isPointInPath(400, 100);
+      console.log(b);
+
+      //   ctx.rect(10, 10, 100, 100);
+      //   ctx.fill();
+      //   console.log(ctx.isPointInPath(450, 50));
+    </script>
+  </body>
+</html>

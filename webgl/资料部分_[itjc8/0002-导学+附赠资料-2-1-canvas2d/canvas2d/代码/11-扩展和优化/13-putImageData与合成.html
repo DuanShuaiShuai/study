@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>putImageData与合成</title>
+    <style>
+        body{margin: 0;overflow: hidden}
+        #canvas{background: #c6a677;}
+    </style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<script>
+    const [width,height]=[window.innerWidth,window.innerHeight];
+    const canvas=document.getElementById('canvas');
+    canvas.width=width;
+    canvas.height=height;
+    const  ctx=canvas.getContext('2d');
+
+    const imgDt=ctx.createImageData(400,400);
+    imgDt.data.forEach((ele,ind)=>{
+        imgDt.data[ind]=255;
+    })
+
+
+    /*全局透明度*/
+    /*ctx.globalAlpha=1;
+    ctx.putImageData(imgDt,0,0);
+
+    //白色的矩形
+    ctx.fillStyle='#fff';
+    ctx.fillRect(400,0,400,400);*/
+
+    /*路径裁剪*/
+    //路径
+    /*ctx.beginPath();
+    ctx.arc(400,400,200,0,Math.PI*2);
+    ctx.stroke();
+    ctx.clip();
+
+    //白色的矩形
+    ctx.fillStyle='#fff';
+    ctx.fillRect(400,0,400,400);
+
+    ctx.putImageData(imgDt,0,0);*/
+
+    /*全局合成*/
+    //已绘图形
+    /*ctx.beginPath();
+    ctx.arc(400,400,200,0,Math.PI*2);
+    ctx.fill();
+
+    //globalCompositeOperation
+    ctx.globalCompositeOperation='source-in';
+
+    //将绘图形
+    // ctx.fillStyle='#fff';
+    // ctx.fillRect(400,0,400,400);
+
+    ctx.putImageData(imgDt,0,0);*/
+
+
+    /*putImageData 裁剪的正确解锁方式*/
+    //已绘图形
+    ctx.putImageData(imgDt,0,0);
+
+
+    //globalCompositeOperation
+    ctx.globalCompositeOperation='destination-in';
+
+    //将绘图形
+    ctx.beginPath();
+    ctx.arc(400,400,200,0,Math.PI*2);
+    ctx.fill();
+
+
+    
+</script>
+</body>
+</html>

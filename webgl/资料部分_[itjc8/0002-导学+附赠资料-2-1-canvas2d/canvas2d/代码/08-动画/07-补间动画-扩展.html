@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>样条线插值动画</title>
+    <style>
+        body{margin: 0;overflow: hidden}
+        #audio{
+            position: absolute;
+            right: 30px;
+            bottom: 30px;
+            opacity: 20%;
+            transition: opacity 200ms;
+        }
+        #audio:hover{
+            opacity: 90%;
+        }
+        #canvas{
+            background-image: url("./images/romantic.jpg");
+            background-size: cover;
+            background-position: center;
+        }
+    </style>
+</head>
+<body>
+<audio id="audio" controls loop autoplay>
+    <source src="./audio/jmww.mp3" type="audio/mpeg">
+</audio>
+<canvas id="canvas"></canvas>
+
+<script src="./js/d3-color.js"></script>
+<script src="./js/SupTween.js"></script>
+<script>
+    //窗口尺寸
+    const [width,height]=[window.innerWidth,window.innerHeight];
+    //canvas
+    const canvas=document.getElementById('canvas');
+    canvas.width=width;
+    canvas.height=height;
+    const  ctx=canvas.getContext('2d');
+
+    //爱心对象
+    class Heart{
+        constructor(scale=1,fillStyle='rgba(255,132,0,0.2)'){
+            //缩放
+            this.scale=scale;
+            //填充色
+            this.fillStyle=fillStyle;
+            //位置
+            this.x=0;
+            this.y=0;
+            //虚线描边的颜色
+            this.dashColors=['red','yellow'];
+        }
+        draw(ctx){
+            const {fillStyle,scale,dashColors,x,y}=this;
+            //保存上下文对象的状态
+            ctx.save();
+
+            /*============设置变换信息============-*/
+            //偏移坐标系
+            ctx.translate(x,y);
+            //缩放
+            ctx.scale(scale,scale);
+
+
+            /*============绘制爱心============-*/
+            ctx.save();
+
+            /*----提前准备好心形路径----*/
+            ctx.beginPath();
+            ctx.moveTo(0,0);
+            //用两个三次贝塞尔曲线组成爱心
+            ctx.bezierCurveTo(-200,-50,-180,-300,0,-200);
+            ctx.bezierCurveTo(180,-300,200,-50,0,0);
+            //闭合路径
+            ctx.closePath();
+
+            /*----用填充方式绘制爱心----*/
+            //填充样式
+            ctx.fillStyle=fillStyle;
+            //以填充的方式显示路径
+            ctx.fill();
+
+            /*----用描边方式绘制爱心----*/
+            //设置描边宽度
+            ctx.lineWidth=7;
+            //虚线样式
+            ctx.setLineDash([15]);
+
+            /*绘制第一部分虚线，并带出光晕*/
+            //投影颜色
+            ctx.shadowColor=fillStyle;
+            //描边颜色
+            ctx.strokeStyle=dashColors[0];
+            for(let i=50;i>0;i-=2){
+                ctx.shadowBlur=i;
+                //以描边的方式显示路径
+                ctx.stroke();
+            }
+
+            /*绘制第二部分虚线*/
+            ctx.strokeStyle=dashColors[1];
+            ctx.lineDashOffset=15;
+            ctx.stroke();
+
+            ctx.restore();
+
+
+            /*============绘制文字============-*/
+            ctx.save();
+            ctx.rotate(-Math.PI/12);
+            ctx.font='bold 48px Arial';
+            //从填充色中取文字的rgb
+            const d3Color=d3.color(fillStyle);
+            const {r,g,b}=d3Color;
+            ctx.fillStyle=`rgba(${r},${g},${b},1)`;
+            ctx.textAlign='center';
+            ctx.textBaseline='middle';
+            ctx.fillText('睫毛弯弯',35,-120);
+            ctx.restore();
+
+
+            ctx.restore();
+        }
+    }
+
+
+    //实例化爱心
+    const heart=new Heart();
+    heart.x=width/2;
+    heart.y=height/2+90;
+    heart.fillStyle='rgba(255,0,0,0.9)';
+    heart.scale=0.7;
+    //heart.draw(ctx);
+
+
+    //实例化Tween 对象,为其添加目标对象
+    let tween = new TWEEN.Tween(heart);
+    //设置目标对象一段时间后的状态to({ key:val }, 时间长度)
+    tween.to({scale:1.2,fillStyle:'rgba(255,45,139,0.5)'}, 1000);
+    //开始计时 start()
+    tween.start();
+    //重复 repeat(Infinity)
+    tween.repeat(Infinity);
+    //悠悠球 yoyo(true)
+    tween.yoyo(true);
+    //设置插值
+    //Linear, Quadratic, Cubic, Quartic, Quintic, Sinusoidal, Exponential, Circular, Elastic, Back, Bounce
+    tween.easing(TWEEN.Easing.Sinusoidal.Out);
+
+    //让爱心红、黄虚线的不断切换
+    setInterval(function(){
+        heart.dashColors.reverse();
+    },400);
+
+    //渲染方法
+    !(function render(){
+        //更新目标对象的状态
+        TWEEN.update();
+        //清理画布
+        ctx.clearRect(0,0,width,height);
+        //绘图
+        heart.draw(ctx);
+        //请求动画帧，递归调用render 函数
+        window.requestAnimationFrame(render);
+    })()
+
+</script>
+</body>
+</html>

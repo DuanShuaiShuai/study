@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>canvas绘图</title>
+    <style>
+        #canvas{
+            background-color: antiquewhite;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas" width="600" height="700">
+        不兼容
+    </canvas>
+    <script>
+        //获取画布
+        const canvas = document.querySelector('#canvas');
+        // canvas.width=300;
+        // canvas.height=150;
+        //画笔
+        const ctx=canvas.getContext('2d');
+        //颜色 红色
+        ctx.fillStyle='red';
+        //形状 矩形
+        ctx.fillRect(50,100,400,200);
+    </script>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>机器人</title>
+    <style>
+        body{margin: 0;overflow: hidden;}
+        #canvas{background: antiquewhite;}
+    </style>
+</head>
+<body>
+<canvas id="canvas" width="600" height="700">
+    <p>浏览器不兼容canvas </p>
+</canvas>
+<script>
+    const canvas=document.getElementById('canvas');
+    //canvas充满窗口
+    canvas.width=window.innerWidth;
+    canvas.height=window.innerHeight;
+    //画笔
+    const  ctx=canvas.getContext('2d');
+
+    //绘图
+    function render(color='red'){
+        //颜色
+        ctx.fillStyle=color;
+
+        //描边宽度
+        ctx.lineWidth=40;
+
+        //矩形
+        //面部矩形
+        ctx.fillRect(50,250,400,200);
+        //面部轮廓
+        ctx.strokeRect(50,250,400,200);
+        //面部擦除
+        ctx.clearRect(50,300,400,60);
+
+        //路径
+        //直线
+        ctx.beginPath();
+        ctx.moveTo(150,400);
+        ctx.lineTo(350,400);
+        ctx.stroke();
+
+        //圆形
+        ctx.beginPath();
+        ctx.arc(150,330,20,0,Math.PI*2);
+        ctx.fill();
+
+        //半圆
+        ctx.beginPath();
+        ctx.arc(350,340,20,-Math.PI,0);
+        ctx.fill();
+
+        //三次贝塞尔曲线
+        ctx.beginPath();
+        ctx.moveTo(50,50);
+        ctx.bezierCurveTo(150,50,150,250,250,250);
+        ctx.moveTo(450,50);
+        ctx.bezierCurveTo(350,50,350,250,250,250);
+        ctx.stroke();
+    }
+
+    let color='red';
+    render(color);
+
+    canvas.addEventListener('mousemove',function(event){
+        const {left,top}=canvas.getBoundingClientRect();
+        const x=event.clientX-left;
+        const y=event.clientY-top;
+        let curColor='red';
+        if(x>30&&x<470&&y>230&&y<470){
+            curColor='black';
+        }else{
+            curColor='red';
+        }
+        if(color!==curColor){
+            color=curColor;
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            render(color);
+        }
+    })
+
+
+
+
+</script>
+</body>
+</html>

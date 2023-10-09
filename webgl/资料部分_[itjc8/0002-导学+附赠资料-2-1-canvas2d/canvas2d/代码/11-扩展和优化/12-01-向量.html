@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>样条线插值动画</title>
+    <style>
+        body{margin: 0;overflow: hidden}
+        #canvas{background: antiquewhite;}
+    </style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<script type="module">
+    import Vector2 from './jsm/Vector2.js';
+    
+    const [width,height]=[window.innerWidth,window.innerHeight];
+    const canvas=document.getElementById('canvas');
+    canvas.width=width;
+    canvas.height=height;
+    const  ctx=canvas.getContext('2d');
+
+    const v1=new Vector2(1,1);
+    const v2=new Vector2(2,3);
+    v1.add(v2);
+    v1.sub(v2);
+
+    //3.9269908169872414
+    v1.x=-1;
+    v1.y=-1;
+    // console.log(v1.angle());
+
+    const v3=new Vector2(1,0);
+    v3.rotate(Math.PI/2);
+    //x=0,y=1
+    // console.log(v3);
+    // console.log('x',v3.x.toFixed(2));
+
+    //勾三股四玄五
+    const v4=new Vector2(3,4);
+    console.log(v4.length());
+
+    v4.setLength(10);
+    //x=6,y=8
+    console.log(v4);
+
+    
+</script>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Path2D</title>
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+      }
+      #canvas {
+        background: antiquewhite;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+    <script>
+      const canvas = document.getElementById("canvas");
+      const [width, height] = [window.innerWidth, window.innerHeight];
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext("2d");
+
+      /*
+       * new Path2D() 建立路径对象
+       * 在路径对象中建立图形
+       * 将路径对象作为fill() 或stroke() 方法的参数，绘制路径
+       * */
+      const path2D = new Path2D();
+      path2D.arc(300, 300, 200, 0, Math.PI * 3);
+
+      ctx.lineWidth = 20;
+      ctx.strokeStyle = "#00acec";
+      ctx.beginPath();
+      // ctx.arc(300,300,200,0,Math.PI*3);
+      ctx.stroke(path2D);
+
+      //清理画布
+      ctx.clearRect(0, 0, width, height);
+      //清理路径集合
+      ctx.beginPath();
+      /*ctx.arc(300,300,200,0,Math.PI*3);
+    ctx.stroke()*/
+      ctx.stroke(path2D);
+    </script>
+  </body>
+</html>

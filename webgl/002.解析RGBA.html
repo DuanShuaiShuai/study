@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=s, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      * {
+        padding: 0px;
+        margin: 0px;
+      }
+      canvas {
+        background-color: antiquewhite;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+  </body>
+  <script>
+    const canvas = document.getElementById("canvas");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    const gl = canvas.getContext("webgl");
+    //设置缓冲清空颜色
+    gl.clearColor(0.0, 1.0, 0.0, 1);
+    //刷底色
+    gl.clear(gl.COLOR_BUFFER_BIT);
+
+    // css颜色
+    const rgbaCss = "rgba(255,255,0,1)";
+    //正则
+    const reg = RegExp(/\((.*)\)/);
+    const rebaStr = reg.exec(rgbaCss)[1];
+    const rgba = rebaStr.split(",").map((n) => parseInt(n));
+    console.log(rgba);
+    //设置缓冲清空颜色
+    gl.clearColor(rgba[0] / 255, rgba[1] / 255, rgba[2] / 255, rgba[3]);
+    //刷底色
+    gl.clear(gl.COLOR_BUFFER_BIT);
+  </script>
+</html>

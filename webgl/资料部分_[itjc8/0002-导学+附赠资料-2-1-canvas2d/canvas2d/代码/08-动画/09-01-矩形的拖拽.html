@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>矩形的拖拽</title>
+    <style>
+        body{margin: 0;overflow: hidden}
+        #canvas{background: antiquewhite;}
+    </style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<script>
+    const canvas=document.getElementById('canvas');
+    canvas.width=window.innerWidth;
+    canvas.height=window.innerHeight;
+    const  ctx=canvas.getContext('2d');
+
+    //矩形对象
+    class Rectangle{
+        constructor(width=0,height=0,color='#000'){
+            this.width=width;
+            this.height=height;
+            this.color=color;
+            this.x=0;
+            this.y=0;
+        }
+        draw(ctx){
+            const {x,y,width,height,color}=this;
+            ctx.save();
+            ctx.fillStyle=color;
+            ctx.fillRect(x,y,width,height);
+            ctx.restore();
+        }
+    }
+
+    //实例化矩形对象
+    const rect = new Rectangle(200,100);
+    rect.x=100;
+    rect.y=100;
+
+    //鼠标位减图形位
+    let subPos=null;
+    //图形是否被选择
+    let selected=false;
+
+    //点击事件
+    canvas.addEventListener('mousedown',mousedownFn);
+    //移动
+    canvas.addEventListener('mousemove',mousemoveFn);
+    //鼠标抬起
+    canvas.addEventListener('mouseup',mouseupFn);
+
+    function mousedownFn(event){
+        //鼠标位置
+        const mousePos=getMousePos(event);
+        //鼠标位减图形位
+        subPos={
+            x:mousePos.x-rect.x,
+            y:mousePos.y-rect.y
+        }
+        
+        //判断鼠标是否在图形中
+        selected=containPoint(rect,mousePos);
+        
+        console.log(selected);
+    }
+    function mousemoveFn(event){
+        //鼠标位置
+        const mousePos=getMousePos(event);
+        /*如果鼠标选择了图形
+        *   让图形跟着鼠标动
+        *   按需渲染
+        * */
+        if(selected){
+            rect.x=mousePos.x-subPos.x;
+            rect.y=mousePos.y-subPos.y;
+            render();
+        }
+
+    }
+    function mouseupFn(event){
+        //鼠标抬起，取消拖拽
+        selected=false;
+    }
+    //判断点是否在图形中
+    function containPoint(obj,mousePos){
+        //解构图形位置和尺寸
+        const {x,y,width,height}=obj;
+        //解构鼠标位置
+        const {x:mx,y:my}=mousePos;
+
+        //计算鼠标和图形上、下、左、右边界的关系
+        const l=mx>x;
+        const r=mx<x+width;
+        const t=my>y;
+        const b=my<y+height;
+
+        return l&&r&&t&&b;
+    }
+
+    //获取鼠标在canvas中的位置
+    function getMousePos(event){
+        //获取鼠标位置
+        const {clientX,clientY}=event;
+        //获取canvas 边界位置
+        const {top,left}=canvas.getBoundingClientRect();
+        //计算鼠标在canvas 中的位置
+        const x=clientX-left;
+        const y=clientY-top;
+        return {x,y};
+    }
+
+    //渲染方法
+    render();
+    function render(){
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        rect.draw(ctx);
+    }
+
+</script>
+</body>
+</html>

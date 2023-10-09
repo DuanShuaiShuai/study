@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>描边选择</title>
+    <style>
+        body{margin: 0;overflow: hidden}
+        #canvas{background: antiquewhite;}
+    </style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<script>
+    const canvas=document.getElementById('canvas');
+    const [width,height]=[window.innerWidth,window.innerHeight];
+    canvas.width=width;
+    canvas.height=height;
+    const ctx=canvas.getContext('2d');
+
+    /*isPointInStroke() 描边选择*/
+    ctx.lineWidth=50;
+    ctx.beginPath();
+    ctx.arc(300,300,200,0,Math.PI*3);
+    ctx.stroke();
+
+    // ctx.beginPath();
+    
+    /*判断鼠标是否划入了描边*/
+    canvas.addEventListener('mousemove',({clientX,clientY})=>{
+        const bool=ctx.isPointInStroke(clientX,clientY);
+        console.log(bool);
+    })
+
+</script>
+</body>
+</html>

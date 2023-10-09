@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>适配设备像素比</title>
+    <style>
+        body{margin: 0;overflow: hidden}
+        #canvas1{
+            background-color: antiquewhite;
+        }
+        #canvas2{
+            background-color: aquamarine;
+        }
+    </style>
+</head>
+<body>
+<!--不做分辨率适配-->
+<canvas id="canvas1"></canvas>
+<!--做分辨率适配-->
+<canvas id="canvas2"></canvas>
+<script>
+    //视口宽高
+    const [width,height]=[220,400];
+
+    /*不做分辨率适配*/
+    {
+        const canvas=document.getElementById('canvas1');
+        const  ctx=canvas.getContext('2d');
+        canvas.width=width;
+        canvas.height=height;
+
+        //绘图
+        ctx.font='60px arial ';
+        ctx.fillText('canvas',10,100);
+    }
+
+    /*适配设备分辨率*/
+    {
+        const canvas=document.getElementById('canvas2');
+        const  ctx=canvas.getContext('2d');
+        //通过window 对象获取设备像素比devicePixelRatio
+        const ratio=window.devicePixelRatio;
+        console.log('ratio',ratio);
+
+        //让canvas 的画布尺寸乘以像素比，即将canvas 画布变大
+        canvas.width=width*ratio;
+        canvas.height=height*ratio;
+
+        //让canvas 坐标系的缩放和画布的缩放同步
+        ctx.scale(ratio,ratio);
+
+        //设置canvas css尺寸，定义画布的视觉大小
+        canvas.style.width=width+'px';
+        canvas.style.height=height+'px';
+
+        //绘图
+        ctx.font='60px arial ';
+        ctx.fillText('canvas',10,100);
+    }
+
+
+
+
+</script>
+</body>
+</html>
+

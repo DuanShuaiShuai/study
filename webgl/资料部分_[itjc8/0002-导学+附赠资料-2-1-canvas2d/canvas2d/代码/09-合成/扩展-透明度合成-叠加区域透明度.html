@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>合成</title>
+    <style>
+        body{margin: 0;overflow: hidden}
+        #canvas{
+            background: antiquewhite;
+        }
+    </style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<script>
+    const canvas=document.getElementById('canvas');
+    //canvas充满窗口
+    canvas.width=window.innerWidth;
+    canvas.height=window.innerHeight;
+    //画笔
+    const  ctx=canvas.getContext('2d');
+    let imgDt=null;
+
+    /*已知条件
+    *   x 全局透明度
+    *   len 完全不透明的图形叠的加次数
+    * */
+    const x=0.5;
+    const len=3;
+
+    /*设置全局透明的*/
+    ctx.globalAlpha=x;
+
+    /*手动绘图获取图形叠加后的透明度*/
+    for(let n=0;n<len+1;n++){
+        ctx.fillRect(0,0,400,200);
+        imgDt=ctx.getImageData(0,0,1,1);
+        if (n===len){
+            console.log('手动绘图获取透明度',imgDt.data[3])
+        }
+    }
+
+    /*算法获取图形叠加后的透明度*/
+    console.log('递归算法获取透明度',getAlpha(x,len))
+
+    function getAlpha(x=1,len=0){
+        return getY();
+        function getY(y=0,n=0){
+            const float=255*Math.pow(x,n+1);
+            const [uint]=new Uint8ClampedArray([y+float]);
+            if(n===len){
+                return uint;
+            }else{
+                return getY(uint,n+1);
+            }
+        }
+    }
+
+</script>
+</body>
+</html>

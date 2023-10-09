@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>时间</title>
+</head>
+<body>
+<script>
+    /*实验：将标签页隐藏后，对比setInterval 和请求动画帧方法的运行状态*/
+
+    //定义两个变量
+    let [a,b]=[0,0];
+
+    //setInterval
+    setInterval(()=>{
+        a++;
+    },100)
+
+    //requestAnimationFrame
+    !(function render(){
+        b++;
+        requestAnimationFrame(render)
+    })()
+
+    //监听标签的可见性 visibilitychange
+    //标签可见性的判断方法：document.visibilityState === 'visible'
+    window.addEventListener('visibilitychange',()=>{
+        console.log(document.visibilityState);
+        console.log('a',a);
+        console.log('b',b);
+    })
+
+</script>
+</body>
+</html>

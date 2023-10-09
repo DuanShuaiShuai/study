@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>滤镜</title>
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+      }
+      #canvas {
+        background: antiquewhite;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+    <script>
+      const canvas = document.getElementById("canvas");
+      const [width, height] = [window.innerWidth, window.innerHeight];
+      canvas.width = width;
+      canvas.height = height;
+      //画笔
+      const ctx = canvas.getContext("2d");
+
+      /*
+       * filter 路径
+       *   'blur(5px)' 模糊
+       *   'hue-rotate(5deg)' 色调
+       *   ……
+       * */
+      const img = new Image();
+      img.src = "./images/dog.jpg";
+      img.onload = function () {
+        //原始图
+        ctx.drawImage(img, 0, 0);
+        //滤镜
+        ctx.filter = "blur(5px)";
+        ctx.filter = "brightness(1)";
+        ctx.filter = "brightness(0.5)";
+        ctx.filter = "brightness(0)";
+        ctx.filter = "brightness(2)";
+        ctx.filter = "contrast(1)";
+        ctx.filter = "contrast(0.5)";
+        ctx.filter = "contrast(0)";
+        ctx.filter = "contrast(2)";
+        ctx.filter = "drop-shadow(30px 30px 30px #000)";
+        ctx.filter = "grayscale(1)";
+        ctx.filter = "grayscale(0.5)";
+        ctx.filter = "grayscale(0)";
+        ctx.filter = "grayscale(2)";
+        ctx.filter = "hue-rotate(0)";
+        ctx.filter = "hue-rotate(180deg)";
+        ctx.filter = "hue-rotate(90deg)";
+        ctx.filter = "hue-rotate(45deg)";
+        ctx.filter = "hue-rotate(20deg)";
+        ctx.filter = "invert(1)";
+        ctx.filter = "invert(0.5)";
+        ctx.filter = "invert(0)";
+        ctx.filter = "invert(2)";
+        ctx.filter = "opacity(1)";
+        ctx.filter = "opacity(0.5)";
+        ctx.filter = "saturate(1)";
+        ctx.filter = "saturate(0.5)";
+        ctx.filter = "saturate(0)";
+        ctx.filter = "saturate(2)";
+        ctx.filter = "saturate(20)";
+        ctx.filter = "sepia(1)";
+        ctx.filter = "sepia(0.5)";
+        ctx.filter = "sepia(0)";
+        ctx.filter = "sepia(2)";
+        ctx.filter = "none";
+        ctx.filter = "blur(2px) sepia(1)";
+
+        //后处理过的图片
+        ctx.drawImage(img, 400, 0);
+      };
+    </script>
+  </body>
+</html>

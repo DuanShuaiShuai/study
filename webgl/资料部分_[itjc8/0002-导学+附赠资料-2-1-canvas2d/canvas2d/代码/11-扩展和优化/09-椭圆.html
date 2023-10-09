@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ellipse</title>
+    <style>
+        body{margin: 0;overflow: hidden}
+        #canvas{background: antiquewhite;}
+
+    </style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<script>
+    const canvas=document.getElementById('canvas');
+    const [width,height]=[window.innerWidth,window.innerHeight];
+    canvas.width=width;
+    canvas.height=height;
+    //画笔
+    const ctx=canvas.getContext('2d');
+    /*ellipse 椭圆
+    *   x, y 圆心位
+    *   radiusX, radiusY 半径
+    *   rotation 椭圆方向
+    *   startAngle, endAngle  起始弧度、结束弧度
+    *   anticlockwise 绘图方向
+    */
+    ctx.lineWidth=10;
+    ctx.beginPath();
+    ctx.ellipse(
+        400,400,
+        250,150,
+        0,
+        Math.PI/4,Math.PI,
+        true
+    )
+    ctx.stroke();
+
+</script>
+</body>
+</html>

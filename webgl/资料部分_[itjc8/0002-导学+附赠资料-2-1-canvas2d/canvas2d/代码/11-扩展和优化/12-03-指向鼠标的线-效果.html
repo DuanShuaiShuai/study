@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>指向鼠标的线</title>
+    <style>
+        body{margin: 0;overflow: hidden}
+        #canvas{background: antiquewhite;}
+    </style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<script type="module">
+    import Vector2 from "./jsm/Vector2.js";
+
+    const [width,height]=[window.innerWidth,window.innerHeight];
+    const canvas=document.getElementById('canvas');
+    canvas.width=width;
+    canvas.height=height;
+    const  ctx=canvas.getContext('2d');
+
+    //线对象
+    class Line{
+        constructor(start=new Vector2(),end=new Vector2()) {
+            this.start=start;
+            this.end=end;
+        }
+        draw(ctx){
+            const {start,end}=this;
+            ctx.save();
+            //线
+            ctx.beginPath();
+            ctx.moveTo(start.x,start.y);
+            ctx.lineTo(end.x,end.y);
+            ctx.lineWidth=2;
+            ctx.stroke();
+            //圆点
+            ctx.beginPath();
+            ctx.arc(end.x,end.y,6,0,Math.PI*2);
+            ctx.fill();
+            ctx.restore();
+        }
+    }
+    //圆圈对象
+    class Circle{
+        constructor(pos,r) {
+            this.pos=pos;
+            this.r=r;
+        }
+        draw(ctx){
+            const {pos,r}=this;
+            ctx.save();
+            ctx.setLineDash([6]);
+            ctx.beginPath();
+            ctx.arc(pos.x,pos.y,r,0,Math.PI*2);
+            ctx.stroke();
+            ctx.restore();
+        }
+    }
+
+    //线的基点
+    const basicPos=new Vector2(width/2,height/2);
+    //线的长度
+    let r1=100;
+
+    //线对象
+    let line=new Line(basicPos.clone(),new Vector2(basicPos.x+r1,basicPos.y));
+    //圆圈对象
+    let circle1=new Circle(basicPos.clone(),r1);
+    //渲染方法
+    render();
+
+    //为acnvas 添加鼠标移动事件
+    canvas.addEventListener('mousemove',mousemoveFn);
+
+    function mousemoveFn(event){
+        //鼠标位置 mousePos
+        const mousePos=new Vector2(event.clientX,event.clientY);
+        //鼠标位置减去基点位置，得到鼠标相对于基点的位置 mouseSubBasic
+        const mouseSubBasic=mousePos.sub(basicPos);
+        //设置mouseSubBasic向量的长度和r1相等
+        const pos=mouseSubBasic.setLength(r1);
+        //基于基点位置偏移向量
+        pos.add(basicPos);
+        //更新线的终点位置
+        line.end.copy(pos);
+        //渲染
+        render();
+    }
+
+    //渲染方法
+    function render(){
+        //清理画笔
+        ctx.clearRect(0,0,width,height);
+        //绘图
+        line.draw(ctx);
+        circle1.draw(ctx);
+    }
+
+</script>
+</body>
+</html>

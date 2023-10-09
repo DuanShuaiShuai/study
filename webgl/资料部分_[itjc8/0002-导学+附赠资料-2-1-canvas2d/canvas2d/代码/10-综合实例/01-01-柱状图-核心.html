@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>柱状图核心</title>
+    <style>
+        body{margin: 0;overflow: hidden}
+        #canvas{background: antiquewhite;}
+    </style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<script>
+    const canvas=document.getElementById('canvas');
+    const [width,height]=[window.innerWidth,window.innerHeight];
+    canvas.width=width;
+    canvas.height=height;
+    const  ctx=canvas.getContext('2d');
+
+    /*------ 1.建立柱体 Rect -------*/
+    /*建立矩形对象 Rect
+    * 属性：
+    *   width 宽度
+    *   height 高度
+    *   color 颜色
+    *   x,y 位置
+    *   data 数据
+    * 方法：
+    *   draw(ctx)
+    * */
+    class Rect{
+        constructor(width=100,height=400,color='chocolate'){
+            this.width=width;
+            this.height=height;
+            this.color=color;
+            this.x=0;
+            this.y=0;
+            this.data=1000;
+        }
+        draw(ctx){
+            const {width,height,color,x,y}=this;
+            ctx.save();
+            ctx.fillStyle=color;
+            ctx.fillRect(
+                x,y,
+                width,height
+            )
+            ctx.restore();
+        }
+    }
+
+
+    /*实例化柱体
+    * 设置尺寸、颜色、位置、文本内容
+    * */
+    const rect=new Rect();
+    rect.x=200;
+    rect.y=100;
+    rect.draw(ctx);
+
+
+    /*------ 2.建立提示框 Tip -------*/
+    /*建立提示框 Tip
+    * 属性：
+    *   text 文字内容
+    *   fontSize 文字大小
+    *   x,y 位置
+    *   visible 可见性
+    * 方法：
+    *   draw(ctx)
+    *
+    * 绘制背景：
+    *   设置填充色 'rgba(0,0,0,0.6)'
+    *   设置字体 '32px arial'
+    *   获取文字宽度width： measureText(text)
+    *   绘制填充矩形：fillRect()
+    *
+    * 绘制文字：fillText()
+    *
+    * */
+    class Tip{
+        constructor(){
+            this.text='文字内容';
+            this.fontSize=32;
+            this.x=0;
+            this.y=0;
+            this.visible=false;
+            this.padW=20;
+            this.padH=10;
+        }
+        draw(ctx){
+            const {text,fontSize,x,y,visible,padW,padH}=this;
+            if(!visible){return}
+            ctx.save();
+            ctx.font=`${fontSize}px arail`;
+            //绘制矩形，作为底色
+            const {width}=ctx.measureText(text);
+            ctx.fillStyle='rgba(0,0,0,0.6)';
+            ctx.fillRect(
+                x,y,
+                width+padW*2,fontSize+padH*2
+            )
+            //绘制文字
+            ctx.textBaseline='top';
+            ctx.fillStyle='#fff';
+            ctx.fillText(text,x+padW,y+padH);
+            ctx.restore();
+        }
+    }
+
+
+    /*实例化提示框*/
+    const tip=new Tip();
+    tip.x=250;
+    tip.y=300;
+    // tip.visible=true;
+    tip.draw(ctx);
+
+
+    /*------ 3.鼠标划入划出的事件 -------*/
+    /*监听鼠标移动事件*/
+    canvas.addEventListener('mousemove',mousemoveFn);
+    function mousemoveFn(event){
+        /*获取鼠标在canvas 中的相对位置*/
+        const mousePos=getMousePos(event);
+        /*判断鼠标是否在矩形中
+        *   如果在，就显示提示文字，设置文字位置和内容
+        *   如果不在，就隐藏提示文字
+        * */
+        if(containPoint(rect,mousePos)){
+            tip.visible=true;
+            tip.text=rect.data;
+            tip.x=mousePos.x+30;
+            tip.y=mousePos.y+30;
+        }else{
+            tip.visible=false;
+        }
+        /*按需渲染*/
+        render();
+    }
+
+
+    //渲染
+    render();
+    //渲染方法
+    function render(){
+        //清理canvas 画布
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        //绘制柱体
+        rect.draw(ctx);
+        //绘制提示框
+        tip.draw(ctx);
+    }
+
+    //判断点是否矩形中
+    function containPoint(obj,mousePos){
+        const {x,y,width,height}=obj;
+        const t=mousePos.y>y;
+        const b=mousePos.y<y+height;
+        const l=mousePos.x>x;
+        const r=mousePos.x<x+width;
+        return t&&b&&l&&r;
+    }
+    //获取鼠标位置
+    function getMousePos(event){
+        //获取鼠标位置
+        const {clientX,clientY}=event;
+        //获取canvas 边界位置
+        const {top,left}=canvas.getBoundingClientRect();
+        //计算鼠标在canvas 中的位置
+        const x=clientX-left;
+        const y=clientY-top;
+        return {x,y};
+    }
+
+</script>
+</body>
+</html>

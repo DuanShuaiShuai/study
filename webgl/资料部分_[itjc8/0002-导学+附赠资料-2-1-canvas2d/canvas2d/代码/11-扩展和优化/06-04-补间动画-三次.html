@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>逐帧动画转补间动画</title>
+    <style>
+        body{margin: 0;overflow: hidden}
+        #canvas{background: antiquewhite;}
+    </style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<script>
+    const canvas=document.getElementById('canvas');
+    const [width,height]=[window.innerWidth,window.innerHeight];
+    canvas.width=width;
+    canvas.height=height;
+    //画笔
+    const ctx=canvas.getContext('2d');
+
+    /*小球对象
+    *   x、y 位置
+    *   draw(ctx) 绘图方法
+    * */
+    class Ball{
+        constructor(r=10){
+            this.r=r;
+            this.x=0;
+            this.y=0;
+        }
+        draw(ctx){
+            const {x,y,r}=this;
+            ctx.save();
+            ctx.fillStyle='rgba(0,0,0,0.5)';
+            ctx.beginPath();
+            ctx.arc(x,y,r,0,Math.PI*2);
+            ctx.fill();
+            ctx.restore();
+        }
+    }
+
+    /*实例化小球*/
+    const ball=new Ball();
+    ball.x=100;
+    ball.y=100;
+    // ball.draw(ctx);
+
+    /*startTime 起始时间*/
+    const startTime=new Date();
+    /*timeLen 动画时长*/
+    const timeLen=1000;
+    /*arrt1、arrt2 目标对象在两个关键帧上的属性*/
+    const arrt1={y:ball.y,x:ball.x};
+    const arrt2={y:ball.y+600,x:ball.x+600};
+
+    /*动画结束时要做什么
+    *   frame 动画帧
+    *   cancelAnimationFrame 清理关键帧
+    * */
+    let frame=null;
+    let complete=()=>{
+        cancelAnimationFrame(frame);
+    };
+
+    /*插值算法
+    * inter1 线性插值
+    * inter2 二次贝塞尔曲线插值
+    * inter3 三次贝塞尔曲线插值
+    */
+    function inter1(t,p0,p1){
+        return p0+(p1-p0)*t;
+    }
+    function inter2(t,p0,p2){
+        const p1=p0+(p2-p0)*-2;
+        return p0*Math.pow(1-t,2)
+            +2*t*(1-t)*p1
+            +t*t*p2;
+    }
+    function inter3(t,p0,p3){
+        const p1=p0;
+        const p2=p3;
+        return p0*Math.pow(1-t,3)
+            +3*p1*t*Math.pow(1-t,2)
+            +3*p2*t*t*(1-t)
+            +p3*Math.pow(t,3)
+    }
+
+    /*update 更新方法
+    *   获取当前小球运动时长：当前时间-动画起始时间
+    *   捕捉小球运动结束事件
+    *   获取当前小球运动时长和总时长的比值
+    *   通过时间比值，在两针之间计算属性插值
+    * */
+    function update(){
+        let diff=new Date()-startTime;
+        if(diff>timeLen){
+            diff=timeLen;
+            complete();
+        }
+        const t=diff/timeLen;
+        ball.x=inter1(t,arrt1.x,arrt2.x);
+        ball.y=inter3(t,arrt1.y,arrt2.y);
+    }
+
+    /*连续渲染
+    *   请求动画帧
+    *   更新数据
+    *   清理画布
+    *   绘图
+    * */
+    !(function render(){
+        frame=requestAnimationFrame(render);
+        update();
+        // ctx.clearRect(0,0,canvas.width,canvas.height);
+        ball.draw(ctx);
+    })()
+
+</script>
+</body>
+</html>

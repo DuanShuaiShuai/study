@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>文本</title>
+    <style>
+        body{margin: 0;overflow: hidden}
+        #canvas{background: antiquewhite;}
+    </style>
+</head>
+<body>
+<!--123456-->
+<canvas id="canvas"></canvas>
+<script>
+    const canvas=document.getElementById('canvas');
+    canvas.width=window.innerWidth;
+    canvas.height=window.innerHeight;
+    const ctx=canvas.getContext('2d');
+
+    const text='劳动最光荣';
+
+    ctx.font='100px arial';
+
+    //描边宽度
+    ctx.lineWidth=3;
+
+    //描边色
+    ctx.strokeStyle='#00acec';
+
+    const measure=ctx.measureText(text);
+    console.log(measure);
+
+    /*填充文字 fillText(text, x, y ,maxWidth)*/
+    // ctx.fillText(text,50,200,1000);
+
+    /*描边文字 strokeText(text, x, y ,maxWidth)*/
+    ctx.strokeText(text,50,200,measure.width/2);
+
+
+
+
+</script>
+</body>
+</html>

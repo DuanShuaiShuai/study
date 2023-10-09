@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>速度和加速度</title>
+    <style>
+        body{margin: 0;overflow: hidden}
+        #canvas{background: antiquewhite;}
+    </style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<script>
+    const canvas=document.getElementById('canvas');
+    const [width,height]=[window.innerWidth,window.innerHeight];
+    canvas.width=width;
+    canvas.height=height;
+    //画笔
+    const  ctx=canvas.getContext('2d');
+
+    /*小球对象
+    *   x、y 位置
+    *   draw(ctx) 绘图方法
+    * */
+    class Ball{
+        constructor(r=30){
+            this.r=r;
+            this.x=0;
+            this.y=0;
+        }
+        draw(ctx){
+            const {x,y,r}=this;
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(x,y,r,0,Math.PI*2);
+            ctx.fill();
+            ctx.restore();
+        }
+    }
+
+    /*实例化小球*/
+    const ball=new Ball();
+    ball.x=canvas.width/2;
+    ball.y=100;
+    ball.draw(ctx);
+
+    /*速度 vy（像素/毫秒）*/
+    // const vy=0.2;
+    let vy=0.2;
+
+    /*加速度 ay*/
+    const ay=0.01;
+
+    /*弹力*/
+    const bounce=0.8;
+
+    /*计时器*/
+    let time=new Date();
+
+    /*请求动画帧*/
+    !(function render(){
+        const now=new Date();
+        const diff=now-time;
+        time=now;
+        console.log(diff);
+
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+
+        vy+=ay;
+        ball.y+=vy*diff;
+
+        if(ball.y+ball.r>height){
+            ball.y=height-ball.r;
+            vy*=-bounce;
+        }
+
+        ball.draw(ctx);
+        requestAnimationFrame(render);
+    })()
+
+</script>
+</body>
+</html>

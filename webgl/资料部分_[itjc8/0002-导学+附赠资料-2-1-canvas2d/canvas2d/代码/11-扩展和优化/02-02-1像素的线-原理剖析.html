@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>canvas透明度</title>
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+      }
+      #canvas {
+        background: antiquewhite;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+    <script>
+      const canvas = document.getElementById("canvas");
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      const ctx = canvas.getContext("2d");
+      ctx.imageSmoothingEnabled = false;
+
+      const size = 50;
+      ctx.translate(0.5, 0.5);
+      /*在y=1 的位置绘制一条水平直线*/
+      drawLine(1);
+
+      /*在y=3.5 的位置绘制一条水平直线*/
+      drawLine(3);
+
+      /*获取canvas左上角的一块区域*/
+      const { data } = ctx.getImageData(0, 0, size, size);
+      ctx.save();
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let y = 0; y < size; y++) {
+        for (let x = 0; x < size; x++) {
+          const ind = (y * size + x) * 4;
+          const r = data[ind];
+          const g = data[ind + 1];
+          const b = data[ind + 2];
+          const a = data[ind + 3];
+          if (!x && !y) {
+            console.log(a);
+          }
+          const color = `rgba(${r},${g},${b},${a / 255})`;
+          ctx.fillStyle = color;
+          ctx.fillRect(x * size, y * size, size, size);
+        }
+      }
+      ctx.restore();
+
+      /*批量绘制行间距为size 的水平直线*/
+      ctx.save();
+      ctx.strokeStyle = "rgba(0,0,0,0.5)";
+      for (let i = 0; i < canvas.height; i += size) {
+        drawLine(i, "rgba(0,0,0,0.5)");
+      }
+      ctx.restore();
+
+      /*基于高度绘制水平直线的方法*/
+      function drawLine(y) {
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(canvas.width, y);
+        ctx.stroke();
+        ctx.restore();
+      }
+    </script>
+  </body>
+</html>

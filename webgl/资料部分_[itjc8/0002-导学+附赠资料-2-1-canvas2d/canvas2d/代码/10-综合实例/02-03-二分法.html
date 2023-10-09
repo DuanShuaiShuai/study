@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>二分法</title>
+    <style>
+        body{margin: 0;overflow: hidden}
+        #canvas{background: antiquewhite;}
+    </style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<script>
+    const canvas=document.getElementById('canvas');
+    const [width,height]=[window.innerWidth,window.innerHeight];
+    canvas.width=width;
+    canvas.height=height;
+    //画笔
+    const  ctx=canvas.getContext('2d');
+
+    /*已知A、B 两点，求A、B 的中点C*/
+    //起点
+    const A={x:60,y:80};
+    //结束点
+    const B={x:300,y:400};
+    //下一步要到达的点
+    const C={x:0,y:0};
+    //比值
+    const n=0.9;
+
+    /*二分法*/
+    const AB={
+        x:B.x-A.x,
+        y:B.y-A.y,
+    }
+    C.x=AB.x*n+A.x;
+    C.y=AB.y*n+A.y;
+
+    /*直线*/
+    ctx.beginPath();
+    ctx.moveTo(A.x,A.y);
+    ctx.lineTo(B.x,B.y);
+    ctx.stroke();
+
+    /*点A*/
+    ctx.beginPath();
+    ctx.arc(A.x,A.y,5,0,Math.PI*2);
+    ctx.fill();
+
+    /*点B*/
+    ctx.beginPath();
+    ctx.arc(B.x,B.y,5,0,Math.PI*2);
+    ctx.fill();
+
+    /*点C*/
+    ctx.beginPath();
+    ctx.arc(C.x,C.y,5,0,Math.PI*2);
+    ctx.fill();
+
+</script>
+</body>
+</html>

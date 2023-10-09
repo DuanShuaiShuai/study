@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>canvas透明度</title>
+    <style>
+        body{margin: 0;overflow: hidden}
+        #canvas{background: antiquewhite;}
+    </style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<script>
+    const canvas=document.getElementById('canvas');
+    canvas.width=window.innerWidth;
+    canvas.height=window.innerHeight;
+    const ctx=canvas.getContext('2d');
+    /*正确方法*/
+    ctx.beginPath();
+    ctx.moveTo(50,50);
+    ctx.lineTo(200,50);
+    ctx.lineTo(200,200);
+    ctx.stroke();
+
+    /*错误方法*/
+    /*ctx.beginPath();
+    ctx.moveTo(250,50);
+    ctx.lineTo(400,50);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(400,50);
+    ctx.lineTo(400,200);
+    ctx.stroke();*/
+
+</script>
+</body>
+</html>
+

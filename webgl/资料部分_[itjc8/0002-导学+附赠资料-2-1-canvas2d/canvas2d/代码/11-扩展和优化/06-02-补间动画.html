@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>逐帧动画转补间动画</title>
+    <style>
+        body{margin: 0;overflow: hidden}
+        #canvas{background: antiquewhite;}
+    </style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<script>
+    const canvas=document.getElementById('canvas');
+    const [width,height]=[window.innerWidth,window.innerHeight];
+    canvas.width=width;
+    canvas.height=height;
+    //画笔
+    const  ctx=canvas.getContext('2d');
+
+    /*小球对象
+    *   x、y 位置
+    *   draw(ctx) 绘图方法
+    * */
+    class Ball{
+        constructor(r=20){
+            this.r=r;
+            this.x=0;
+            this.y=0;
+        }
+        draw(ctx){
+            const {x,y,r}=this;
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(x,y,r,0,Math.PI*2);
+            ctx.fill();
+            ctx.restore();
+        }
+    }
+
+    /*实例化小球*/
+    const ball=new Ball();
+    ball.x=canvas.width/2;
+    ball.y=100;
+    ball.draw(ctx);
+
+    /*startTime 起始时间*/
+    const startTime=new Date();
+    /*timeLen 动画时长*/
+    const timeLen=2000;
+
+    /*arrt1、arrt2 目标对象在两个关键帧上的属性*/
+    const attr1={y:ball.y};
+    const attr2={y:height-ball.r}
+
+    /*frame 动画帧*/
+    let frame=null;
+
+    /*complete 动画结束时,cancelAnimationFrame 清理关键帧*/
+    function complete(){
+        cancelAnimationFrame(frame);
+    }
+
+    /*inter 插值算法-线性插值*/
+    function inter(t,p0,p1){
+        return p0+(p1-p0)*t;
+    }
+
+    /*update 更新方法
+    *   获取当前小球运动时长：当前时间-动画起始时间
+    *   小球运动结束时，校正小球位置，执行完成方法
+    *   获取当前小球运动时长和总时长的比值
+    *   通过时间比值，在两针之间计算属性插值
+    * */
+    function update(){
+        let curTimeLen=new Date()-startTime;
+        if(curTimeLen>timeLen){
+            curTimeLen=timeLen;
+            complete();
+        }
+        const t=curTimeLen/timeLen;
+        ball.y=inter(t,attr1.y,attr2.y);
+    }
+
+
+    /*连续渲染
+    *   请求动画帧
+    *   更新数据
+    *   清理画布
+    *   绘图
+    * */
+    !(function render(){
+        frame=requestAnimationFrame(render);
+        update();
+        ctx.clearRect(0,0,width,height);
+        ball.draw(ctx);
+        console.log('11111');
+    })()
+
+</script>
+</body>
+</html>

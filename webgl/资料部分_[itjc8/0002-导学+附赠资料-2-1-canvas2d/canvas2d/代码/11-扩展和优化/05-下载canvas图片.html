@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>下载canvas图片</title>
+</head>
+<body>
+<canvas id="canvas" width="420" height="126"></canvas>
+<script>
+    const canvas=document.getElementById('canvas');
+    const ctx=canvas.getContext('2d');
+
+    const img=new Image();
+    img.src='https://img.kaikeba.com/70350130700202jusm.png';
+    img.setAttribute("crossOrigin",'Anonymous');
+
+    img.onload=function(){
+        ctx.drawImage(img,0,0);
+
+        /*下载canvas 图片
+        *   建立a元素
+        *   设置a元素的download文件名
+        *   设置a元素的href
+        *   将a元素添加到document 中
+        *   用js触发a元素的点击事件click 事件
+        *   删除a元素
+        * */
+        const a=document.createElement('a');
+        a.innerText='下载canvas图片';
+        a.download='canvas----图片';
+        a.href=canvas.toDataURL();
+        // document.body.append(a);
+        a.click();
+        a.remove();
+
+    }
+
+</script>
+</body>
+</html>
+

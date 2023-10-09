@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=s, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      * {
+        padding: 0px;
+        margin: 0px;
+      }
+      canvas {
+        background-color: antiquewhite;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+  </body>
+  <!-- 顶点着色器 -->
+  <script id="vertexShader" type="x-shader/x-vertex">
+    //attribute  是存储限定符 是专门用于向外部导出与点位相关的对象的，这类似于es6模版语法中的export
+    //vec4 是变量类型 vec4是4维矢量对象
+    //a_Position 是变量名 之后在js中会根据这个变量名导入变量，这个变量名是一个指针,指向实际数据的存储位置，也是说，我们在着色器外改变了a_Position所指向的实际数据，那么在用着色气中的a_Position所对应的数据也会修改
+    attribute vec4 a_Position;
+    void main(){
+      //点位 由js传输决定
+      gl_Position =a_Position;
+      //尺寸
+      gl_PointSize =10.0;
+    }
+  </script>
+  <!-- 片元着色器 -->
+  <script id="fragmentShader" type="x-shader/x-fragment">
+    void main(){
+      //填充色 写死的 GLHL语言规定的
+      gl_FragColor =vec4(1.0,0.0,0.0,1.0);
+    }
+  </script>
+  <script type="module">
+    import { initShaders } from "../jsm/Utils.js";
+    const canvas = document.getElementById("canvas");
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    canvas.width = width;
+    canvas.height = height;
+    const gl = canvas.getContext("webgl");
+    //设置缓冲清空颜色
+    gl.clearColor(1.0, 1.0, 1.0, 1);
+    //刷底色
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    //获取着色器文本
+    const vsSource = document.getElementById("vertexShader").innerText;
+    const fsSource = document.getElementById("fragmentShader").innerText;
+    initShaders(gl, vsSource, fsSource);
+    const a_Position = gl.getAttribLocation(gl.program, "a_Position");
+    gl.vertexAttrib3f(a_Position, 0.0, 0.0, 0.0);
+    gl.drawArrays(gl.POINTS, 0, 1);
+    //现在a_Position变量有了，接下来就可以对它赋值了
+    canvas.addEventListener("click", (event) => {
+      const { clientX, clientY } = event;
+      const { left, top, width, height } = canvas.getBoundingClientRect();
+      const [cssX, cssY] = [clientX - left, clientY - top];
+      //解决坐标原点位置的差异 坐标中心由左上角->中心
+      const [halfWidth, halfHeight] = [width / 2, height / 2];
+      const [xBaseCenter, yBaseCenter] = [cssX - halfWidth, cssY - halfHeight];
+      //解决y方向的差异
+      const yBaseCenterTop = -yBaseCenter;
+      //解决坐标基底的差异
+      const [x, y] = [xBaseCenter / halfWidth, yBaseCenterTop / halfHeight];
+      console.log({ cssX, cssY, x, y });
+      gl.vertexAttrib2f(a_Position, x, y);
+      //刷底色
+      gl.clear(gl.COLOR_BUFFER_BIT);
+      gl.drawArrays(gl.POINTS, 0, 1);
+    });
+  </script>
+</html>

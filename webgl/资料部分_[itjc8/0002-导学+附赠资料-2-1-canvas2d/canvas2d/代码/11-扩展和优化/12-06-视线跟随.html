@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>视线跟随</title>
+    <style>
+        html, body {margin: 0;height: 100%;}
+        #rec {width: 100%;height: 100%;}
+    </style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<script type="module">
+    import Vector2 from "./jsm/Vector2.js";
+
+    const [width,height]=[window.innerWidth,window.innerHeight];
+    const canvas=document.getElementById('canvas');
+    canvas.width=width;
+    canvas.height=height;
+    const  ctx=canvas.getContext('2d');
+
+    //img 加载器
+    const ImgLoader={
+        onload(imgs,fn){
+            const imgPros=imgs.map((ele)=>{
+                return ImgLoader.imgPro(ele);
+            });
+            Promise.all(imgPros).then((val)=>{
+                fn(val);
+            },()=>{
+                console.error('图片加载失败');
+            });
+        },
+        imgPro(img){
+            return new Promise((resolve)=>{
+                img.onload=function(){
+                    resolve(img);
+                }
+            });
+        }
+    };
+    //身体
+    class BodyRect{
+        constructor(img,pos){
+            this.img=img;
+            this.pos=pos;
+        }
+        draw(ctx){
+            const {img,pos}=this;
+            ctx.save();
+            ctx.drawImage(img,pos.x,pos.y);
+            ctx.restore();
+        }
+    }
+    //眼睛
+    class EyeRect{
+        constructor(img,pos,offset){
+            this.img=img;
+            this.pos=pos;
+            this.offset=offset;
+        }
+        draw(ctx){
+            const {img,pos,offset}=this;
+            ctx.save();
+            ctx.drawImage(img,pos.x-offset,pos.y-offset);
+            ctx.restore();
+        }
+    }
+
+    //眼睛的感知距离
+    const maxR=50;
+    //眼眶的半径
+    const rimR=15;
+    //两只眼睛相对于怪兽的位置
+    const basicPos=[new Vector2(126,52),new Vector2(219,59)];
+    //眼瞳的偏移距离。drawImage 时，眼球的基点在左上角，需调整致中心
+    const eyeR=11;
+    //身体和眼睛
+    let monsterBody,eyeLeft,eyeRight;
+    //移动变换的位置
+    let monsterPos=getMonsterPos();
+
+    //怪物身体图片
+    const bodyImg=new Image();
+    bodyImg.src='./images/404.png';
+    //眼睛图片
+    const eyeImg=new Image();
+    eyeImg.src='./images/eye.png';
+    //当两个图片加载成功后，渲染图形
+    ImgLoader.onload([bodyImg,eyeImg],loadedFn);
+
+
+    function loadedFn(){
+        //建立身体和眼睛
+        monsterBody=new BodyRect(bodyImg,new Vector2(0,0));
+        eyeLeft=new EyeRect(eyeImg,basicPos[0].clone(),eyeR);
+        eyeRight=new EyeRect(eyeImg,basicPos[1].clone(),eyeR);
+
+        //渲染
+        render();
+
+        //添加鼠标移动事件
+        canvas.addEventListener('mousemove',mousemoveFn);
+        //监听窗口尺寸的改变
+        window.addEventListener('resize',resizeFn);
+    }
+
+    //渲染方法
+    function render(){
+        //清理
+        ctx.clearRect(0,0,width,height);
+        //渲染
+        ctx.save();
+        ctx.translate(monsterPos.x,monsterPos.y);
+        monsterBody.draw(ctx);
+        eyeLeft.draw(ctx);
+        eyeRight.draw(ctx);
+        ctx.restore();
+    }
+
+    //鼠标移动
+    function mousemoveFn(event){
+        //获取鼠标位置
+        const mousePos=new Vector2(event.clientX,event.clientY).sub(monsterPos);
+        //遍历两个眼瞳
+        [eyeLeft,eyeRight].forEach((ele,ind)=>{
+            //获取鼠标到眼瞳基点的距离
+            const mouseSubObj=mousePos.clone().sub(basicPos[ind]);
+            //以眼睛中心为基点，按照比例计算瞳孔到圆心的距离
+            const radius=Math.min(mouseSubObj.length()/maxR,1)*rimR;
+            //设置眼瞳位置
+            const pos=mouseSubObj.setLength(radius).add(basicPos[ind]);
+            //为眼睛的位置赋值
+            ele.pos.copy(pos);
+        });
+        //渲染
+        render();
+    }
+
+    //获取怪兽位置
+    function getMonsterPos(){
+        return new Vector2(canvas.width-500,canvas.height-500);
+    }
+
+    //窗口尺寸改变
+    function resizeFn(){
+        const [width,height]=[window.innerWidth,window.innerHeight];
+        canvas.width=width;
+        canvas.height=height;
+        monsterPos=getMonsterPos();
+        render();
+
+    }
+</script>
+</body>
+</html>

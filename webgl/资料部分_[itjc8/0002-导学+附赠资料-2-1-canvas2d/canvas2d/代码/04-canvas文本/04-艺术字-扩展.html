@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>霓虹灯</title>
+    <style>
+        html{height: 100%;overflow: hidden;}
+        body{height: 100%;margin: 0;}
+        #canvas{
+            background: #000;
+        }
+    </style>
+
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<script>
+    const canvas=document.getElementById('canvas');
+    //canvas充满窗口
+    canvas.width=window.innerWidth;
+    canvas.height=window.innerHeight;
+    //画笔
+    const  ctx=canvas.getContext('2d');
+
+    //颜色数组
+    const colors=['red','yellow'];
+
+    /*文字内容*/
+    const text='劳动最光荣';
+
+    /*文字位置*/
+    const [x,y]=[50,300];
+
+    //字体属性
+    ctx.font='bold 220px arial';
+
+    function draw(){
+        //保存上下文对象的状态
+        ctx.save();
+        //设置描边样式
+        ctx.strokeStyle=colors[0];
+        //设置描边宽度
+        ctx.lineWidth=3;
+        //虚线
+        ctx.setLineDash([8]);
+        //以描边的方式显示路径
+        ctx.strokeText(text,x,y);
+        //第二部分虚线
+        ctx.lineDashOffset=8;
+        ctx.strokeStyle=colors[1];
+        //光晕
+        ctx.shadowColor='orange';
+        //多画几遍光晕
+        for(let i=25;i>3;i-=2){
+            ctx.shadowBlur=i;
+            ctx.strokeText(text,x,y);
+        }
+        //将上下文对象的状态恢复到上一次保存时的状态
+        ctx.restore();
+    }
+
+    draw();
+
+    setInterval(function(){
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        draw();
+        colors.reverse();
+    },500)
+
+
+
+
+</script>
+</body>
+</html>
