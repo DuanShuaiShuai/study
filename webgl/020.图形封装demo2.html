@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Document</title>
+    <style>
+      * {
+        padding: 0px;
+        margin: 0px;
+      }
+      canvas {
+        background-color: antiquewhite;
+      }
+      #audio:hover {
+        opacity: 90%;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+  </body>
+  <script id="vertexShader" type="x-shader/x-vertex">
+    attribute vec4 a_Position;
+    void main(){
+      gl_Position =a_Position;
+      gl_PointSize =20.0;
+    }
+  </script>
+  <!-- 片元着色器 -->
+  <script id="fragmentShader" type="x-shader/x-fragment">
+    void main(){
+        gl_FragColor =vec4(1.0,1.0,1.0,1.0);
+    }
+  </script>
+  <script type="module">
+    import { initShaders } from "../jsm/Utils.js";
+    import Poly from "../jsm/Poly.js";
+    const canvas = document.getElementById("canvas");
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    canvas.width = width;
+    canvas.height = height;
+    //画笔
+    const gl = canvas.getContext("webgl");
+    // 获取着色器文本
+    const vsSource = document.getElementById("vertexShader").innerText;
+    const fsSource = document.getElementById("fragmentShader").innerText;
+    //初始化着色器
+    initShaders(gl, vsSource, fsSource);
+    // //清理画布
+    gl.clearColor(0, 0, 0, 1.0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    const poly = new Poly({
+      gl,
+      vertices: [0, 0.2],
+    });
+    poly.draw();
+    setTimeout(() => {
+      poly.addVertice(-0.2, -0.1);
+      gl.clear(gl.COLOR_BUFFER_BIT);
+      poly.draw();
+      setTimeout(() => {
+        gl.clear(gl.COLOR_BUFFER_BIT);
+        poly.draw();
+        poly.draw(["POINTS", "LINE_STRIP"]);
+      }, 1000);
+    }, 1000);
+  </script>
+</html>
