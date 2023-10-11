@@ -28,7 +28,7 @@
   </head>
   <body>
     <canvas id="canvas"></canvas>
-    <audio id="audio" controls loop autoplay>
+    <audio id="audio" controls loop>
       <source src="./audio/szz.mp3" type="audio/mpeg" />
     </audio>
     <!-- 顶点着色器 -->
@@ -55,11 +55,15 @@
       }
     </script>
     <script type="module">
-      import { initShaders,getMousePosInWebgl,glToCssPos } from "../jsm/Utils.js";
-      import Poly from '../jsm/Poly.js';
-      import Sky from '../jsm/Sky.js';
-      import Compose from '../jsm/Compose.js';
-      import Track from '../jsm/Track.js';
+      import {
+        initShaders,
+        getMousePosInWebgl,
+        glToCssPos,
+      } from "../jsm/Utils.js";
+      import Poly from "../jsm/Poly.js";
+      import Sky from "../jsm/Sky.js";
+      import Compose from "../jsm/Compose.js";
+      import Track from "../jsm/Track.js";
 
       const canvas = document.querySelector("#canvas");
       canvas.width = window.innerWidth;
@@ -77,95 +81,96 @@
       //初始化着色器
       initShaders(gl, vsSource, fsSource);
 
-
       //声明颜色 rgba
       gl.clearColor(0, 0, 0, 0);
       //刷底色
       gl.clear(gl.COLOR_BUFFER_BIT);
 
       //夜空
-      const sky=new Sky(gl)
+      const sky = new Sky(gl);
       //建立合成对象
-      const compose=new Compose()
+      const compose = new Compose();
 
       //正在绘制的多边形
-      let poly=null
+      let poly = null;
       //鼠标划上的点
-      let point=null
+      let point = null;
 
       //取消右击提示
-      canvas.oncontextmenu=function(){
-        return false
-      }
+      // canvas.oncontextmenu = function () {
+      //   return false;
+      // };
 
-      canvas.addEventListener('mousedown',(event)=>{
-        if(event.button===2){
-          popVertice()
-        }else{
-          const {x,y}=getMousePosInWebgl(event,canvas)
-          if(poly){
-            addVertice(x,y)
-          }else{
-            crtPoly(x,y)
+      canvas.addEventListener("mousedown", (event) => {
+        if (event.button === 2) {
+          popVertice();
+        } else {
+          const { x, y } = getMousePosInWebgl(event, canvas);
+          if (poly) {
+            addVertice(x, y);
+          } else {
+            crtPoly(x, y);
           }
         }
-        render()
-      })
+        render();
+      });
 
-      canvas.addEventListener('mousemove',(event)=>{
-        const {x,y}=getMousePosInWebgl(event,canvas)
-        point=hoverPoint(x,y)
-        canvas.style.cursor=point?'pointer':'default'
-        if(poly){
-          const obj=poly.geoData[poly.geoData.length-1]
-          obj.x=x
-          obj.y=y
+      canvas.addEventListener("mousemove", (event) => {
+        const { x, y } = getMousePosInWebgl(event, canvas);
+        point = hoverPoint(x, y);
+        canvas.style.cursor = point ? "pointer" : "default";
+        if (poly) {
+          const obj = poly.geoData[poly.geoData.length - 1];
+          obj.x = x;
+          obj.y = y;
         }
-      })
+      });
 
-      !(function ani(){
-        compose.update(new Date())
-        sky.updateVertices(['x','y','pointSize','alpha'])
-        render()
-        requestAnimationFrame(ani)
-      })()
+      !(function ani() {
+        //补间动画
+        compose.update(new Date());
+        sky.updateVertices(["x", "y", "pointSize", "alpha"]);
+        render();
+        requestAnimationFrame(ani);
+      })();
 
-      function crtPoly(x,y){
-        let o1=point?point:{x,y,pointSize:random(),alpha:1}
-        const o2={x,y,pointSize:random(),alpha:1}
-        poly=new Poly({
-          size:4,
-          attrName:'a_Attr',
-          geoData:[o1,o2],
-          types:['POINTS','LINE_STRIP']
-        })
-        sky.add(poly)
-        crtTrack(o1)
-        crtTrack(o2)
+      function crtPoly(x, y) {
+        let o1 = point ? point : { x, y, pointSize: random(), alpha: 1 };
+        const o2 = { x, y, pointSize: random(), alpha: 1 };
+        poly = new Poly({
+          size: 4,
+          attrName: "a_Attr",
+          geoData: [o1, o2],
+          types: ["POINTS", "LINE_STRIP"],
+        });
+        sky.add(poly);
+        crtTrack(o1);
+        crtTrack(o2);
       }
 
-      function addVertice(x,y){
-        const {geoData}=poly
-        if(point){
-          geoData[geoData.length-1]=point
+      function addVertice(x, y) {
+        const { geoData } = poly;
+        if (point) {
+          geoData[geoData.length - 1] = point;
         }
-        let obj={x,y,pointSize:random(),alpha:1}
-        geoData.push(obj)
-        crtTrack(obj)
+        let obj = { x, y, pointSize: random(), alpha: 1 };
+        geoData.push(obj);
+        crtTrack(obj);
+        console.log(geoData);
       }
 
-      function popVertice(){
-        poly.geoData.pop()
-        compose.children.pop()
-        poly=null
+      function popVertice() {
+        poly.geoData.pop();
+        compose.children.pop();
+        poly = null;
       }
 
-      function crtTrack(obj){
-        const {pointSize}=obj
-        const track = new Track(obj)
-        track.start = new Date()
-        track.timeLen = 2000
-        track.loop = true
+      function crtTrack(obj) {
+        const { pointSize } = obj;
+        const track = new Track(obj);
+        track.start = new Date();
+        track.timeLen = 2000;
+        track.loop = true;
         track.keyMap = new Map([
           [
             "pointSize",
@@ -184,38 +189,38 @@
             ],
           ],
         ]);
-        compose.add(track)
+        compose.add(track);
       }
 
-      function hoverPoint(mx,my){
-        for(let {geoData} of sky.children){
-          for(let obj of geoData){
-            if(poly&&obj===poly.geoData[poly.geoData.length-1]){
-              continue
+      function hoverPoint(mx, my) {
+        for (let { geoData } of sky.children) {
+          for (let obj of geoData) {
+            if (poly && obj === poly.geoData[poly.geoData.length - 1]) {
+              continue;
             }
-            const delta={
-              x:mx-obj.x,
-              y:my-obj.y
-            }
-            const {x,y}=glToCssPos(delta,canvas)
-            const dist=x*x+y*y
-            if(dist<100){
-              return obj
+            const delta = {
+              x: mx - obj.x,
+              y: my - obj.y,
+            };
+            const { x, y } = glToCssPos(delta, canvas);
+            const dist = x * x + y * y;
+            if (dist < 100) {
+              // distance 小于 10px
+              return obj;
             }
           }
         }
-        return null
+        return null;
       }
 
-      function random(){
-        return Math.random()*8+3
+      function random() {
+        return Math.random() * 8 + 3;
       }
 
-      function render(){
+      function render() {
         gl.clear(gl.COLOR_BUFFER_BIT);
-        sky.draw()
+        sky.draw();
       }
-      
     </script>
   </body>
 </html>
