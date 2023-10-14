@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Document</title>
+    <style>
+      * {
+        padding: 0px;
+        margin: 0px;
+      }
+      canvas {
+        background-color: antiquewhite;
+      }
+      #audio:hover {
+        opacity: 90%;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+  </body>
+  <script id="vertexShader" type="x-shader/x-vertex">
+    attribute vec4 a_Position;
+    uniform mat4 u_Matrix;
+    void main(){
+      gl_Position =
+        u_Matrix*vec4(a_Position);
+    }
+  </script>
+  <script id="fragmentShader" type="x-shader/x-fragment">
+    void main(){
+        gl_FragColor =vec4(1.0,1.0,1.0,1.0);
+    }
+  </script>
+  <script type="module">
+    import { Matrix4 } from "https://unpkg.com/three/build/three.module.js";
+    import { initShaders } from "../utils/Utils.js";
+    const canvas = document.getElementById("canvas");
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    canvas.width = width;
+    canvas.height = height;
+    const gl = canvas.getContext("webgl");
+
+    const vsSource = document.getElementById("vertexShader").innerText;
+    const fsSource = document.getElementById("fragmentShader").innerText;
+    initShaders(gl, vsSource, fsSource);
+    // 着色器肯定是拿不到的，这是语言不通导致的
+    // 为了解决这个问题，webgl系统就建立了一个能翻译双方语言的缓冲区，js可以用特定的方法把数据存在这个缓冲中，着色器可以从缓冲区中拿到相应的数据
+    const vertices = new Float32Array([0, 0.1, -0.1, -0.1, 0.1, -0.1]);
+    //建立数据缓存区对象
+    const vertexBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+    // 向缓存区对象中写入数据
+    gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+    const a_Position = gl.getAttribLocation(gl.program, "a_Position");
+
+    // const u_Translation = gl.getUniformLocation(gl.program, "u_Translation");
+    // gl.uniform4f(u_Translation, 0, 0.5, 0, 0);
+    gl.vertexAttribPointer(a_Position, 2, gl.FLOAT, false, 0, 0);
+    gl.enableVertexAttribArray(a_Position);
+    //清理画布
+    gl.clearColor(0, 0, 0, 1.0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    const u_Matrix = gl.getUniformLocation(gl.program, "u_Matrix");
+    // const u_SinB = gl.getUniformLocation(gl.program, "u_SinB");
+    // const u_CosB = gl.getUniformLocation(gl.program, "u_CosB");
+    const mt4 = new Matrix4();
+    let angle = 0.3;
+    !(function ani() {
+      angle += 1;
+      mt4.makeRotationZ(angle);
+      gl.uniformMatrix4fv(u_Matrix, false, mt4.elements);
+
+      // gl.uniform1f(u_SinB, Math.sin(angle));
+      // gl.uniform1f(u_CosB, Math.cos(angle));
+      gl.clear(gl.COLOR_BUFFER_BIT);
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+      requestAnimationFrame(ani);
+    })();
+  </script>
+</html>
