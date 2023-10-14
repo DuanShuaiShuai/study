@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=s, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      * {
+        padding: 0px;
+        margin: 0px;
+      }
+      canvas {
+        background-color: antiquewhite;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+  </body>
+  <script id="vertexShader" type="x-shader/x-vertex">
+    attribute vec4 a_Position;
+    attribute float a_PointSize;
+
+    void main(){
+      gl_Position =a_Position;
+      gl_PointSize =a_PointSize;
+    }
+  </script>
+  <!-- 片元着色器 -->
+  <script id="fragmentShader" type="x-shader/x-fragment">
+    void main(){
+      //填充色 写死的 GLHL语言规定的
+      gl_FragColor =vec4(1.0,0.0,0.0,1.0);
+    }
+  </script>
+  <script type="module">
+    import { initShaders } from "../utils/Utils.js";
+    const canvas = document.getElementById("canvas");
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    canvas.width = width;
+    canvas.height = height;
+    const gl = canvas.getContext("webgl");
+    gl.clearColor(1.0, 1.0, 1.0, 1);
+    const vsSource = document.getElementById("vertexShader").innerText;
+    const fsSource = document.getElementById("fragmentShader").innerText;
+    initShaders(gl, vsSource, fsSource);
+    const a_Position = gl.getAttribLocation(gl.program, "a_Position");
+    const a_PointSize = gl.getAttribLocation(gl.program, "a_PointSize");
+
+    const g_points = [
+      {
+        x: 0,
+        y: 0,
+        size: 100,
+      },
+    ];
+    render();
+
+    canvas.addEventListener("click", (event) => {
+      const { clientX, clientY } = event;
+      const { left, top, width, height } = canvas.getBoundingClientRect();
+      const [cssX, cssY] = [clientX - left, clientY - top];
+      const [halfWidth, halfHeight] = [width / 2, height / 2];
+      const [xBaseCenter, yBaseCenter] = [cssX - halfWidth, cssY - halfHeight];
+      const yBaseCenterTop = -yBaseCenter;
+      const [x, y] = [xBaseCenter / halfWidth, yBaseCenterTop / halfHeight];
+      g_points.push({ x, y, size: Math.random() * 100 });
+      // gl.vertexAttrib1f(a_PointSize, 10.0);
+      render();
+    });
+    function render(params) {
+      gl.clear(gl.COLOR_BUFFER_BIT);
+      g_points.forEach((o) => {
+        gl.vertexAttrib2f(a_Position, o.x, o.y);
+        gl.vertexAttrib1f(a_PointSize, o.size);
+        gl.drawArrays(gl.POINTS, 0, 1);
+      });
+    }
+  </script>
+</html>

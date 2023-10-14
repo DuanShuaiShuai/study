@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Document</title>
+    <style>
+      * {
+        padding: 0px;
+        margin: 0px;
+      }
+      canvas {
+        background-color: antiquewhite;
+      }
+      #audio:hover {
+        opacity: 90%;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+  </body>
+  <script id="vertexShader" type="x-shader/x-vertex">
+    attribute vec4 a_Position;
+    uniform float u_Scale;
+    void main(){
+        gl_Position=vec4(vec3(a_Position)*u_Scale,1.0);
+    }
+  </script>
+  <!-- 片元着色器 -->
+  <script id="fragmentShader" type="x-shader/x-fragment">
+    void main(){
+        gl_FragColor =vec4(1.0,1.0,1.0,1.0);
+    }
+  </script>
+  <script type="module">
+    import { initShaders } from "../utils/Utils.js";
+    const canvas = document.getElementById("canvas");
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    canvas.width = width;
+    canvas.height = height;
+    const gl = canvas.getContext("webgl");
+
+    const vsSource = document.getElementById("vertexShader").innerText;
+    const fsSource = document.getElementById("fragmentShader").innerText;
+    initShaders(gl, vsSource, fsSource);
+    // 着色器肯定是拿不到的，这是语言不通导致的
+    // 为了解决这个问题，webgl系统就建立了一个能翻译双方语言的缓冲区，js可以用特定的方法把数据存在这个缓冲中，着色器可以从缓冲区中拿到相应的数据
+    //顶点数据 格式：x,y
+    const vertices = new Float32Array([0, 0.1, -0.1, -0.1, 0.1, -0.1]);
+
+    //建立数据缓存区对象
+    const vertexBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+    // 向缓存区对象中写入数据
+    gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+    const a_Position = gl.getAttribLocation(gl.program, "a_Position");
+    const u_Scale = gl.getUniformLocation(gl.program, "u_Scale");
+
+    gl.vertexAttribPointer(a_Position, 2, gl.FLOAT, false, 0, 0);
+    gl.enableVertexAttribArray(a_Position);
+    //清理画布
+    gl.clearColor(0, 0, 0, 1.0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    let scale = 0.0;
+    let dir = true;
+    !(function ani() {
+      scale += 0.1;
+      gl.uniform1f(u_Scale, scale);
+      gl.clear(gl.COLOR_BUFFER_BIT);
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+      requestAnimationFrame(ani);
+    })();
+  </script>
+</html>
