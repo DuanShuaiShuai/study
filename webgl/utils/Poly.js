@@ -2,13 +2,11 @@ const defAttr = () => ({
   gl: null,
   vertices: [],
   geoData: [],
-  size: 2,
+  size: 3,
   attrName: "a_Position",
-  uniName: "u_IsPOINTS",
+  uniforms: {},
   count: 0,
   types: ["POINTS"],
-  circleDot: false, //是否以原点的形式绘制
-  u_IsPOINTS: null,
 });
 export default class Poly {
   constructor(attr) {
@@ -16,7 +14,7 @@ export default class Poly {
     this.init();
   }
   init() {
-    const { attrName, size, gl, circleDot } = this;
+    const { attrName, size, gl } = this;
     if (!gl) {
       return;
     }
@@ -32,16 +30,24 @@ export default class Poly {
     gl.vertexAttribPointer(a_Position, size, gl.FLOAT, false, 0, 0);
     //赋能-批处理
     gl.enableVertexAttribArray(a_Position);
-    //如果是圆点，就获取一下uniform 变量
-    if (circleDot) {
-      this.u_IsPOINTS = gl.getUniformLocation(gl.program, "u_IsPOINTS");
+    //更新uniform 变量
+    this.updateUniform();
+  }
+  updateUniform() {
+    const { gl, uniforms } = this;
+    for (let [key, val] of Object.entries(uniforms)) {
+      const { type, value } = val;
+      const u = gl.getUniformLocation(gl.program, key);
+      if (type.includes("Matrix")) {
+        gl[type](u, false, value);
+      } else {
+        gl[type](u, value);
+      }
     }
   }
-
   updateBuffer() {
     const { gl, vertices } = this;
     this.updateCount();
-    // 向缓存区对象中写入数据
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
   }
   updateCount() {
@@ -75,9 +81,8 @@ export default class Poly {
     this.vertices = vertices;
   }
   draw(types = this.types) {
-    const { gl, count, circleDot, u_IsPOINTS } = this;
+    const { gl, count } = this;
     for (let type of types) {
-      circleDot && gl.uniform1f(u_IsPOINTS, false);
       gl.drawArrays(gl[type], 0, count);
     }
   }
