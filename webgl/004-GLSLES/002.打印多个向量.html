@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=s, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      * {
+        padding: 0px;
+        margin: 0px;
+      }
+      canvas {
+        background-color: antiquewhite;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+  </body>
+  <!-- 顶点着色器 -->
+  <script id="vertexShader" type="x-shader/x-vertex">
+    void main(){
+      //点位
+      gl_Position =vec4(0,0.0,0.0,1.0);
+      //尺寸
+      gl_PointSize =512.0;
+
+    }
+  </script>
+  <!-- 片元着色器 尽可能小数 -->
+  <script id="fragmentShader" type="x-shader/x-fragment">
+    precision mediump float;
+    mat4 m=mat4(
+      255,0,  0,255,
+      0,255,0,255,
+      0,0,255,255,
+      0,255,255,255
+    );
+    void main(){
+      float dist=distance(gl_PointCoord,vec2(0.5,0.5));
+
+      if(dist>=0.0&&dist<0.125){
+        gl_FragColor=m[0]/255.0;
+      }else if(dist>=0.125&&dist<0.25){
+        gl_FragColor=m[1]/255.0;
+      }else if(dist>=0.25&&dist<0.375){
+        gl_FragColor=m[2]/255.0;
+      }else if(dist>=0.375&&dist<0.5){
+        gl_FragColor=m[3]/255.0;
+      }else {
+        discard;
+      }
+    }
+  </script>
+  <script type="module">
+    import { initShaders } from "../utils/Utils.js";
+    const canvas = document.getElementById("canvas");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    const gl = canvas.getContext("webgl");
+    //设置缓冲清空颜色
+    gl.clearColor(0.0, 1.0, 0.0, 1);
+    //刷底色
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    //获取着色器文本
+    const vsSource = document.getElementById("vertexShader").innerText;
+    const fsSource = document.getElementById("fragmentShader").innerText;
+    // console.log(vsSource, fsSource);
+    //初始化着色器
+    //功能：解析着色器文本，整合到程序对象里，关联webgl上下文对象，实现两种语言的相互通信
+    initShaders(gl, vsSource, fsSource);
+
+    //声明颜色 rgba
+    gl.clearColor(0, 0, 0, 1);
+    //刷底色
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    //绘制顶点
+    // gl.POINTS 绘制方式 从0开始画 画1个数量
+    gl.drawArrays(gl.POINTS, 0, 1);
+
+    // 程序对象
+    const vw = 512 / (8 * window.devicePixelRatio);
+    for (let i = 0; i < 4; i++) {
+      logPixel(vw * i + vw / 2);
+    }
+    function logPixel(offset = 0) {
+      console.log(offset);
+      //像素容器
+      const pixel = new Uint8Array(4);
+      //抓取像素
+      gl.readPixels(
+        canvas.width / 2 + offset,
+        canvas.height / 2,
+        1,
+        1,
+        gl.RGBA,
+        gl.UNSIGNED_BYTE,
+        pixel
+      );
+      console.log(pixel);
+    }
+  </script>
+</html>
