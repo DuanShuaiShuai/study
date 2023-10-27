@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <title>全景图</title>
-    <link rel="icon" href="https://img.kaikeba.com/kkb_portal_icon.ico" />
+    <link rel="icon" href="" />
     <style>
       body {
         margin: 0;
@@ -53,12 +53,11 @@
         float len=length(p);
         float y=len/diagLen;
 
-       // vec4 color=texture2D(u_Sampler,vec2(v_Pin));
+       //vec4 color=texture2D(u_Sampler,vec2(v_Pin));
         vec4 color=texture2D(u_Sampler,vec2(x,y));
-        if(p.x>0.0&&abs(p.y)<1.5){
+        if(p.x>0.0&&abs(p.y)<1.0){
           color=texture2D(u_Sampler,vec2(0,y));
         }
-
         gl_FragColor=color;
       }
     </script>
