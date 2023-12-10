@@ -33,7 +33,7 @@
 
   <body>
     <canvas id="canvas"></canvas>
-    <audio id="audio" controls loop>
+    <audio id="audio" controls loop autoplay>
       <source src="../assets/audio/szz.mp3" type="audio/mpeg" />
     </audio>
     <!-- 顶点着色器 -->
@@ -85,6 +85,7 @@
 
       //三维画笔
       const gl = canvas.getContext("webgl");
+      //开启片元的颜色合成功能
       gl.enable(gl.BLEND);
       gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
@@ -112,14 +113,17 @@
       };
 
       canvas.addEventListener("mousedown", (event) => {
-        console.log(event.button);
+        console.log({ eventButton: event.button });
         if (event.button === 2) {
+          // 长按取消
           popVertice();
         } else {
           const { x, y } = getMousePosInWebgl(event, canvas);
           if (poly) {
+            //向正在绘制的图形中添加新的点
             addVertice(x, y);
           } else {
+            // 创建新的路径
             crtPoly(x, y);
           }
         }
@@ -129,6 +133,7 @@
       canvas.addEventListener("mousemove", (event) => {
         const { x, y } = getMousePosInWebgl(event, canvas);
         point = hoverPoint(x, y);
+        console.log({ point });
         canvas.style.cursor = point ? "pointer" : "default";
         if (poly) {
           const obj = poly.geoData[poly.geoData.length - 1];
@@ -146,7 +151,9 @@
 
       function crtPoly(x, y) {
         let o1 = point ? point : { x, y, pointSize: random(), alpha: 1 };
+        console.log(point, { x: o1.x, y: o1.y });
         const o2 = { x, y, pointSize: random(), alpha: 1 };
+        console.log(point, { x: o2.x, y: o2.y });
         poly = new Poly({
           size: 4,
           attrName: "a_Attr",
@@ -167,6 +174,7 @@
         let obj = { x, y, pointSize: random(), alpha: 1 };
         geoData.push(obj);
         crtTrack(obj);
+        console.log(geoData);
       }
 
       function popVertice() {

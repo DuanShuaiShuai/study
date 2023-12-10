@@ -1,3 +1,6 @@
+/**
+ *  补间动画
+ */
 export default class Track {
   constructor(target) {
     this.target = target;

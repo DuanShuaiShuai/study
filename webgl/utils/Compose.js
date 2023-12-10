@@ -1,3 +1,6 @@
+/**
+ * 合成动画
+ */
 export default class Compose {
   constructor() {
     this.parent = null;

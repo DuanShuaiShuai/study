@@ -62,14 +62,17 @@
     //清理画布
     gl.clearColor(0, 0, 0, 1.0);
     gl.clear(gl.COLOR_BUFFER_BIT);
-    let scale = 0.0;
-    let dir = true;
-    !(function ani() {
-      scale += 0.1;
-      gl.uniform1f(u_Scale, scale);
-      gl.clear(gl.COLOR_BUFFER_BIT);
-      gl.drawArrays(gl.TRIANGLES, 0, 3);
-      requestAnimationFrame(ani);
-    })();
+    let scale = 3;
+    gl.uniform1f(u_Scale, scale);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+    // let dir = true;
+    // !(function ani() {
+    //   scale += 0.1;
+    //   gl.uniform1f(u_Scale, scale);
+    //   gl.clear(gl.COLOR_BUFFER_BIT);
+    //   gl.drawArrays(gl.TRIANGLES, 0, 3);
+    //   requestAnimationFrame(ani);
+    // })();
   </script>
 </html>
