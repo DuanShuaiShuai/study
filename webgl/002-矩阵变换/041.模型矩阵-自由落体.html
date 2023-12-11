@@ -71,6 +71,7 @@
       const vertexBuffer = gl.createBuffer();
       gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
       gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+
       const a_Position = gl.getAttribLocation(gl.program, "a_Position");
       gl.vertexAttribPointer(a_Position, 3, gl.FLOAT, false, 0, 0);
       gl.enableVertexAttribArray(a_Position);
@@ -81,9 +82,9 @@
       //试图矩阵
 
       const viewMatrix = new Matrix4().lookAt(
-        new Vector3(0, 0.5, 1),
-        new Vector3(0, 0, 0),
-        new Vector3(0, 1, 0)
+        new Vector3(0, 0.5, 1), //视点
+        new Vector3(0, 0, 0), //目标点
+        new Vector3(0, 1, 0) //上方向
       );
       // 模型矩阵
       const modelMatrix = new Matrix4();
@@ -99,18 +100,24 @@
       const bounce = 1;
 
       !(function ani() {
-        angle += 0.5;
+        angle += 0.02;
         vy += ay;
         y += vy;
+        //选装
         modelMatrix.makeRotationY(angle);
+        //偏移
         modelMatrix.setPosition(0, y, 0);
         if (modelMatrix.elements[13] < minY) {
           y = minY;
           vy *= -bounce;
         }
+        //设置变量
         gl.uniformMatrix4fv(u_ModelMatrix, false, modelMatrix.elements);
+        //刷低色
         gl.clear(gl.COLOR_BUFFER_BIT);
+        //重绘
         gl.drawArrays(gl.LINES, 0, indices.length);
+        //帧动画
         requestAnimationFrame(ani);
       })();
     </script>
