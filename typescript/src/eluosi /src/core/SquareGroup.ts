@@ -10,6 +10,9 @@ export class SquareGroup {
   public get centerPoint(): Point {
     return this._centerPoint;
   }
+  public get shape() {
+    return this._shape;
+  }
   public set centerPoint(v: Point) {
     this._centerPoint = v;
     //同时设置所有小方块对象的坐标

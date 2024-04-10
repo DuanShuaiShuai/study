@@ -22,7 +22,7 @@ export class SquarePageViewer implements IViewer {
           width: PageConfig.SquareSize.width,
           height: PageConfig.SquareSize.height,
           border: "1px solid #ccc",
-          boxSize: "border-box",
+          "box-sizing": "border-box",
           background: this.square.color,
         })
         .appendTo(this.container);
