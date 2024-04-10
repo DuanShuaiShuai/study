@@ -6,6 +6,9 @@ function isPoint(obj: any): obj is Point {
   if (typeof obj.x === "undefined") return false;
   return true;
 }
+/**
+ * 该类中提供一系列的函数，根据游戏规则判断各种情况
+ */
 export class TerisRule {
   static canIMove(shape: Shape, targetPoint: Point): boolean {
     // 假设中心点已经移动了目标位置 算出每个小方块的坐标
