@@ -89,10 +89,10 @@
           -0.5, 0.5, -0.5, -0.5, 0.5, -0.5,
         ]);
         solidVertexBuffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, solidVertexBuffer);
+        gl.bindBuffer(gl.ARRAY_BUFFER, solidVertexBuffer); //
         gl.bufferData(gl.ARRAY_BUFFER, solidVertices, gl.STATIC_DRAW);
         solidPosition = gl.getAttribLocation(solidProgram, "a_Position");
-        gl.vertexAttribPointer(solidPosition, 2, gl.FLOAT, false, 0, 0);
+        gl.vertexAttribPointer(solidPosition, 2, gl.FLOAT, false, 0, 0); //
         gl.enableVertexAttribArray(solidPosition);
 
         solidTime = gl.getUniformLocation(solidProgram, "u_Time");
@@ -119,7 +119,7 @@
           0.5, 0.5, -0.5, 0.5, 0.5, -0.5,
         ]);
         textureVertexBuffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, textureVertexBuffer);
+        gl.bindBuffer(gl.ARRAY_BUFFER, textureVertexBuffer); //
         gl.bufferData(gl.ARRAY_BUFFER, textureVertices, gl.STATIC_DRAW);
         texturePosition = gl.getAttribLocation(textureProgram, "a_Position");
         gl.vertexAttribPointer(texturePosition, 2, gl.FLOAT, false, 0, 0);
@@ -158,6 +158,7 @@
         gl.useProgram(solidProgram);
         gl.bindBuffer(gl.ARRAY_BUFFER, solidVertexBuffer);
         gl.vertexAttribPointer(solidPosition, 2, gl.FLOAT, false, 0, 0);
+        console.log(time);
         gl.uniform1f(solidTime, time);
         gl.drawArrays(gl.TRIANGLES, 0, 3);
 
