@@ -12,3 +12,5 @@ export interface IViewer {
    */
   remove(): void;
 }
+
+export type Shape = Point[];

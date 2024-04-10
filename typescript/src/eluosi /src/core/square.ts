@@ -6,6 +6,7 @@ import { IViewer, Point } from "./types";
 export class Square {
   // 属性：显示者 负责显示的逻辑
   private _viewer?: IViewer;
+
   public get viewer() {
     return this._viewer;
   }
@@ -15,6 +16,7 @@ export class Square {
       this._viewer.show();
     }
   }
+
   public get point() {
     return this._point;
   }

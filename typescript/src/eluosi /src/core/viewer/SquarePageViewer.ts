@@ -1,9 +1,8 @@
-import { Square } from "../square";
+import { Square } from "../Square";
 import { IViewer } from "../types";
 import $ from "jquery";
 import PageConfig from "./PageConfig";
 
-$();
 /**
  * 小方块的页面显示类
  */

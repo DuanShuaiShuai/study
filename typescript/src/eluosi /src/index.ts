@@ -1,4 +1,4 @@
-import { Square } from "./core/square";
+import { Square } from "./core/Square";
 import { IViewer } from "./core/types";
 import { SquarePageViewer } from "./core/viewer/SquarePageViewer";
 import $ from "jquery";
@@ -11,14 +11,15 @@ sq.point = {
 
 $("#btnDown").on("click", () => {
   sq.point = {
-    x: 3,
+    x: sq.point.x,
     y: sq.point.y + 1,
   };
 });
 
-$("#btnAdd").on("click", () => {
-  sq.viewer = new SquarePageViewer(sq, $("#root"));
-});
 $("#btnRemove").on("click", () => {
   sq.viewer?.remove();
+});
+
+$("#btnAdd").on("click", () => {
+  sq.viewer = new SquarePageViewer(sq, $("#root"));
 });
