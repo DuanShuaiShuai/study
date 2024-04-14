@@ -4,30 +4,23 @@ import { SquareGroup } from "./SquareGroup";
 import { Square } from "./Square";
 
 function isPoint(obj: any): obj is Point {
-  if (typeof obj.x === "undefined") {
-    return false;
-  }
+  if (typeof obj.x === "undefined") return false;
   return true;
 }
-
 /**
  * 该类中提供一系列的函数，根据游戏规则判断各种情况
  */
 export class TerisRule {
-  /**
-   * 判断某个形状的方块，是否能够移动到目标位置
-   */
   static canIMove(shape: Shape, targetPoint: Point, exists: Square[]): boolean {
-    //假设，中心点已经移动到了目标位置，算出每个小方块的坐标
+    // 假设中心点已经移动了目标位置 算出每个小方块的坐标
     const targetSquarePoints: Point[] = shape.map((it) => {
       return {
         x: it.x + targetPoint.x,
         y: it.y + targetPoint.y,
       };
     });
-    //边界判断
+    // 边界判断
     let result = targetSquarePoints.some((p) => {
-      //是否超出了边界
       return (
         p.x < 0 ||
         p.x > GameConfig.panelSize.width - 1 ||
@@ -38,17 +31,15 @@ export class TerisRule {
     if (result) {
       return false;
     }
-
-    //判断是否与已有的方块有重叠
+    // 判断是否与已有的方块重叠
     result = targetSquarePoints.some((p) =>
       exists.some((sq) => sq.point.x === p.x && sq.point.y === p.y)
     );
     if (result) {
-      return false;
+      return true;
     }
     return true;
   }
-
   static move(
     teris: SquareGroup,
     targetPoint: Point,
@@ -92,11 +83,10 @@ export class TerisRule {
       return this.move(teris, targetPoint, exists);
     }
   }
-
   /**
-   * 将当前的方块，移动到目标方向的终点
-   * @param teris
-   * @param direction
+   * 将将当前的小方块，移动到目标方向的终点
+   * @param teris 方块数组
+   * @param direction 方向
    */
   static moveDirectly(
     teris: SquareGroup,
@@ -107,7 +97,7 @@ export class TerisRule {
   }
 
   static rotate(teris: SquareGroup, exists: Square[]): boolean {
-    const newShape = teris.afterRotateShape(); //得到旋转之后新的形状
+    const newShape = teris.afterRotateShape();
     if (this.canIMove(newShape, teris.centerPoint, exists)) {
       teris.rotate();
       return true;
