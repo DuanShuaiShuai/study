@@ -30,7 +30,6 @@ function filter<T>(arr: T[], callback: callback<T>) {
 }
 
 const arr = filter<number>([1, 2, 3, 4, 5, 6], (o, i) => o % 2 === 0);
-// console.log(arr);
 // 类型
 class ArrayHelper<T> {
   constructor(private arr: T[]) {}
