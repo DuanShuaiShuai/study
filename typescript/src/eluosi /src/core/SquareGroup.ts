@@ -5,12 +5,13 @@ import { Shape, Point } from "./types";
  * 组合方块
  */
 export abstract class SquareGroup {
+  // 实际的物理坐标
   private _squares: readonly Square[];
-
   public get squares() {
     return this._squares;
   }
 
+  //形状 逻辑坐标
   public get shape() {
     return this._shape;
   }
