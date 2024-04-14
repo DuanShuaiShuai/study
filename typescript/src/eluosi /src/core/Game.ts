@@ -1,4 +1,5 @@
 import GameConfig from "./GameConfig";
+import { Square } from "./Square";
 import { SquareGroup } from "./SquareGroup";
 import { createTeris } from "./Teris";
 import { TerisRule } from "./TerisRule";
@@ -15,7 +16,8 @@ export class Game {
   private _timer?: number;
   // 自定下落的时间间隔
   private _duration: number = 1000;
-
+  // 当前游戏中 已存在的小方块
+  private _exists: Square[] = [];
   constructor(private _viewer: GameViewer) {
     this.resetCenterPoint(GameConfig.nextSize.width, this._nextTeris);
     this._viewer.showNext(this._nextTeris);
@@ -24,13 +26,12 @@ export class Game {
     if (this._gameStatus === GameStatus.playing) {
       return;
     }
-
+    this._gameStatus = GameStatus.playing;
     if (!this._curTeris) {
       // 给当前玩家操作的方块
       this.switchTeris();
     }
     this.autoDrop();
-    this._gameStatus = GameStatus.playing;
   }
   pause() {
     if (this._gameStatus === GameStatus.playing) {
@@ -41,37 +42,40 @@ export class Game {
   }
   controlLeft() {
     if (this._curTeris && this._gameStatus === GameStatus.playing) {
-      TerisRule.move(this._curTeris, MoveDirection.left);
+      TerisRule.move(this._curTeris, MoveDirection.left, this._exists);
     }
   }
 
   controlRight() {
     if (this._curTeris && this._gameStatus === GameStatus.playing) {
-      TerisRule.move(this._curTeris, MoveDirection.right);
+      TerisRule.move(this._curTeris, MoveDirection.right, this._exists);
     }
   }
 
   controlDown() {
     if (this._curTeris && this._gameStatus === GameStatus.playing) {
-      TerisRule.moveDirectly(this._curTeris, MoveDirection.down);
+      TerisRule.moveDirectly(this._curTeris, MoveDirection.down, this._exists);
+      //触底
+      this.hitBottom();
     }
   }
 
   controlRotate() {
     if (this._curTeris && this._gameStatus === GameStatus.playing) {
-      TerisRule.rotate(this._curTeris);
+      TerisRule.rotate(this._curTeris, this._exists);
     }
   }
 
   autoDrop() {
-    console.log("autoDropStart");
-    if (this._timer || this._gameStatus === GameStatus.playing) {
+    if (this._timer || this._gameStatus !== GameStatus.playing) {
       return;
     }
-    console.log("autoDrop");
     this._timer = window.setInterval(() => {
       if (this._curTeris) {
-        TerisRule.move(this._curTeris, MoveDirection.down);
+        if (!TerisRule.move(this._curTeris, MoveDirection.down, this._exists)) {
+          //触底
+          this.hitBottom();
+        }
       }
     }, this._duration);
   }
@@ -104,5 +108,16 @@ export class Game {
           })
       );
     }
+  }
+  /**
+   * 触底后的操作 将当前的俄罗斯包含的小方块，加入到已存在的方块数组中
+   */
+  private hitBottom() {
+    // 将当前的俄罗斯包含的小方块，加入到已存在的方块数组中(_exist)
+    this._exists = this._exists.concat(this._curTeris!.squares);
+    console.log(this._exists);
+
+    // 存入之后 再切换方块
+    this.switchTeris();
   }
 }
