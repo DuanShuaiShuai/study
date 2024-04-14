@@ -1,41 +1,45 @@
+import { Point, IViewer } from "./types";
+
 /**
- * 小方块类 负责数据的逻辑
+ * 小方块
  */
-import { IViewer, Point } from "./types";
-// 数据与显示分离
 export class Square {
-  // 属性：显示者 负责显示的逻辑
+  private _point: Point = {
+    x: 0,
+    y: 0,
+  };
+  private _color: string = "";
+
+  //属性：显示者
   private _viewer?: IViewer;
 
   public get viewer() {
     return this._viewer;
   }
-  public set viewer(val) {
-    this._viewer = val;
-    if (this._viewer) {
-      this._viewer.show();
+
+  public set viewer(v) {
+    this._viewer = v;
+    if (v) {
+      v.show();
     }
   }
 
   public get point() {
     return this._point;
   }
-
   public set point(val) {
     this._point = val;
+    //完成显示
     if (this._viewer) {
       this._viewer.show();
     }
   }
+
   public get color() {
     return this._color;
   }
+
   public set color(val) {
     this._color = val;
   }
-  private _point: Point = {
-    x: 0,
-    y: 0,
-  };
-  private _color: string = "";
 }
