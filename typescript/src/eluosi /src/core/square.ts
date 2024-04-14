@@ -20,6 +20,7 @@ export class Square {
   public get point() {
     return this._point;
   }
+
   public set point(val) {
     this._point = val;
     if (this._viewer) {
@@ -29,5 +30,12 @@ export class Square {
   public get color() {
     return this._color;
   }
-  constructor(private _point: Point, private _color: string) {}
+  public set color(val) {
+    this._color = val;
+  }
+  private _point: Point = {
+    x: 0,
+    y: 0,
+  };
+  private _color: string = "";
 }

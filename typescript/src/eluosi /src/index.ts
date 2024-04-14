@@ -1,26 +1,28 @@
-import { Square } from "./core/Square";
-import { createTeris } from "./core/Teris";
-import { TerisRule } from "./core/TerisRule";
-import { IViewer, MoveDirection } from "./core/types";
-import { SquarePageViewer } from "./core/viewer/SquarePageViewer";
+import { Game } from "./core/Game";
+import { GamePageViewer } from "./core/viewer/GamePageViewer";
 import $ from "jquery";
-const teris = createTeris({ x: 3, y: 2 });
-teris.squares.forEach((sq) => {
-  sq.viewer = new SquarePageViewer(sq, $("#root"));
+var g = new Game(new GamePageViewer());
+
+$("#btnStart").click(function () {
+  g.start();
 });
 
-$("#btnDown").on("click", () => {
-  TerisRule.moveDirectly(teris, MoveDirection.down);
+$("#btnPause").click(function () {
+  g.pause();
 });
 
-$("#btnUp").on("click", () => {
-  TerisRule.move(teris, { x: 2, y: 1 });
+$("#btnLeft").click(function () {
+  g.controlLeft();
 });
 
-$("#btnLeft").on("click", () => {
-  TerisRule.moveDirectly(teris, MoveDirection.left);
+$("#btnRight").click(function () {
+  g.controlRight();
 });
 
-$("#btnRight").on("click", () => {
-  TerisRule.moveDirectly(teris, MoveDirection.right);
+$("#btnDown").click(function () {
+  g.controlDown();
+});
+
+$("#btnRotate").click(function () {
+  g.controlRotate();
 });
