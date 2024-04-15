@@ -3,7 +3,7 @@
   "compilerOptions": {
     "target": "es2016" /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */,
     "module": "commonjs", // 模块类型
-    "strict": true /* Enable all strict type-checking options. */,
+    // "strict": true /* Enable all strict type-checking options. */,
     "outDir": "./dist",
     "lib": ["esnext"],
     "experimentalDecorators": true,
