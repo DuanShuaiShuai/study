@@ -5,17 +5,18 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon --exec ts-node ./src/index.ts",
-    "start": "nodemon --exec tsc ./src/index.ts"
+    "build": "rd /s /q dist & tsc"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "lodash": "^4.17.21",
     "nodemon": "^3.1.0",
+    "reflect-metadata": "^0.2.2",
     "typescript": "^5.4.3"
   },
   "devDependencies": {
-    "@types/node": "^20.11.30",
     "ts-node": "^10.9.2"
   }
 }

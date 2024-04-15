@@ -135,7 +135,7 @@ export class Game {
     if (this._timer || this._gameStatus !== GameStatus.playing) {
       return;
     }
-    this._timer = window.setInterval(() => {
+    this._timer = setInterval(() => {
       if (this._curTeris) {
         if (!TerisRule.move(this._curTeris, MoveDirection.down, this._exists)) {
           //触底

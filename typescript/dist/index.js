@@ -1,5 +1,5 @@
 "use strict";
-var abc = "xx";
-console.log(abc);
-console.log(abc);
-console.log(abc);
+Object.defineProperty(exports, "__esModule", { value: true });
+require("./decorator/reflectMeta");
+require("./decorator/typeof");
+let t = "sxxx";
